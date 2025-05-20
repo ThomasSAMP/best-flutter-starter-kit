@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../routes/navigation_observer.dart';
 import '../config/env_config.dart';
 import '../network/dio_client.dart';
-import '../services/navigation_service.dart';
 
 @module
 abstract class RegisterModule {
@@ -33,8 +32,4 @@ abstract class RegisterModule {
   // Enregistrez l'observateur de navigation
   @lazySingleton
   AppNavigationObserver get navigationObserver => AppNavigationObserver();
-
-  // Enregistrez le service de navigation
-  @lazySingleton
-  NavigationService get navigationService => NavigationService();
 }

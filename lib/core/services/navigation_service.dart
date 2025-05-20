@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../routes/navigation_observer.dart';
 import '../di/injection.dart';
 
+@lazySingleton
 class NavigationService {
   AppNavigationObserver get _observer => getIt<AppNavigationObserver>();
 
