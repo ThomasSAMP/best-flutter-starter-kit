@@ -12,6 +12,13 @@ class NavigationService {
     context.go(route, extra: extra);
   }
 
+  // Méthode pour naviguer vers une route sans contexte (utile pour les notifications)
+  void navigateToRoute(String route) {
+    // Utilisez le navigateur global pour naviguer
+    final router = getIt<GoRouter>();
+    router.go(route);
+  }
+
   // Méthode pour pousser une nouvelle route sur la pile
   void pushRoute(BuildContext context, String route, {Object? extra}) {
     context.push(route, extra: extra);

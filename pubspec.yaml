@@ -54,6 +54,9 @@ dependencies:
   injectable: ^2.5.0
   firebase_crashlytics: ^4.3.5
   firebase_analytics: ^11.4.5
+  
+  # Notifications
+  flutter_local_notifications: ^19.2.1
 
 dev_dependencies:
   flutter_test:

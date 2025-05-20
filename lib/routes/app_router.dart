@@ -17,7 +17,9 @@ import '../shared/widgets/app_scaffold.dart';
 import 'navigation_observer.dart';
 import 'page_transitions.dart';
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'rootNavigator');
+export 'package:flutter/material.dart' show GlobalKey, NavigatorState;
+
+final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'rootNavigator');
 final _shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shellNavigator');
 
 final tabsProvider = Provider<List<TabItem>>((ref) {
@@ -54,9 +56,9 @@ final routerProvider = Provider<GoRouter>((ref) {
   final isAuthenticated = ref.watch(isAuthenticatedProvider);
   final observer = getIt<AppNavigationObserver>();
 
-  return GoRouter(
+  final router = GoRouter(
     initialLocation: '/home',
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: rootNavigatorKey,
     debugLogDiagnostics: true,
     observers: [observer],
     redirect: (context, state) {
@@ -145,4 +147,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
     ],
   );
+
+  // Enregistrer le router dans GetIt
+  if (!getIt.isRegistered<GoRouter>()) {
+    getIt.registerSingleton<GoRouter>(router);
+  }
+
+  return router;
 });
