@@ -1,10 +1,13 @@
+// lib/features/auth/presentation/screens/login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/services/auth_service.dart';
+import '../../../../core/services/navigation_service.dart';
 import '../../../../core/utils/logger.dart';
+import '../../../../shared/widgets/app_bar.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../../shared/widgets/app_text_field.dart';
 
@@ -23,6 +26,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String? _errorMessage;
 
   final _authService = getIt<AuthService>();
+  final _navigationService = getIt<NavigationService>();
 
   @override
   void dispose() {
@@ -48,7 +52,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (mounted) {
         // Vérifier s'il y a une redirection
         final redirectLocation = GoRouterState.of(context).uri.queryParameters['redirect'];
-        context.go(redirectLocation ?? '/home');
+        _navigationService.navigateTo(context, redirectLocation ?? '/home');
       }
     } catch (e) {
       AppLogger.error('Login error', e);
@@ -66,8 +70,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Vérifier si on peut revenir en arrière
+    final canPop = context.canPop();
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: AppBarWidget(
+        title: 'Login',
+        // Afficher le bouton de retour si on peut revenir en arrière
+        showBackButton: canPop,
+        // Si on ne peut pas revenir en arrière (c'est-à-dire que l'utilisateur est arrivé directement sur cette page),
+        // ajouter un bouton pour aller à la page d'accueil
+        leading:
+            !canPop
+                ? IconButton(
+                  icon: const Icon(Icons.home),
+                  onPressed: () => _navigationService.navigateTo(context, '/home'),
+                )
+                : null,
+      ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -125,7 +145,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () => context.push('/forgot-password'),
+                    onPressed: () => _navigationService.pushRoute(context, '/forgot-password'),
                     child: const Text('Forgot Password?'),
                   ),
                 ),
@@ -141,11 +161,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   children: [
                     const Text("Don't have an account?"),
                     TextButton(
-                      onPressed: () => context.push('/register'),
+                      onPressed: () => _navigationService.pushRoute(context, '/register'),
                       child: const Text('Register'),
                     ),
                   ],
                 ),
+                if (!canPop) ...[
+                  const SizedBox(height: 24),
+                  TextButton.icon(
+                    onPressed: () => _navigationService.navigateTo(context, '/home'),
+                    icon: const Icon(Icons.arrow_back),
+                    label: const Text('Back to Home'),
+                  ),
+                ],
               ],
             ),
           ),

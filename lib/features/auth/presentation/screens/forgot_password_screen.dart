@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/services/auth_service.dart';
-import '../../../../core/utils/logger.dart';
 import '../../../../core/di/injection.dart';
-import '../../../../shared/widgets/app_text_field.dart';
+import '../../../../core/services/auth_service.dart';
+import '../../../../core/services/navigation_service.dart';
+import '../../../../core/utils/logger.dart';
+import '../../../../shared/widgets/app_bar.dart';
 import '../../../../shared/widgets/app_button.dart';
+import '../../../../shared/widgets/app_text_field.dart';
 
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
-  const ForgotPasswordScreen({Key? key}) : super(key: key);
+  const ForgotPasswordScreen({super.key});
 
   @override
   ConsumerState<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
@@ -23,6 +25,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   bool _emailSent = false;
 
   final _authService = getIt<AuthService>();
+  final _navigationService = getIt<NavigationService>();
 
   @override
   void dispose() {
@@ -40,7 +43,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
     try {
       await _authService.sendPasswordResetEmail(_emailController.text.trim());
-      
+
       if (mounted) {
         setState(() {
           _emailSent = true;
@@ -62,16 +65,24 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final canPop = context.canPop();
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Forgot Password'),
+      appBar: AppBarWidget(
+        title: 'Forgot Password',
+        showBackButton: canPop,
+        leading:
+            !canPop
+                ? IconButton(
+                  icon: const Icon(Icons.home),
+                  onPressed: () => _navigationService.navigateTo(context, '/home'),
+                )
+                : null,
       ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
-          child: _emailSent 
-              ? _buildSuccessMessage() 
-              : _buildResetForm(),
+          child: _emailSent ? _buildSuccessMessage() : _buildResetForm(),
         ),
       ),
     );
@@ -86,10 +97,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         children: [
           const Text(
             'Reset Password',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -107,9 +115,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               ),
               child: Text(
                 _errorMessage!,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onErrorContainer,
-                ),
+                style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
               ),
             ),
             const SizedBox(height: 16),
@@ -137,7 +143,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
           ),
           const SizedBox(height: 16),
           TextButton(
-            onPressed: () => context.pop(),
+            onPressed: () => _navigationService.goBack(context),
             child: const Text('Back to Login'),
           ),
         ],
@@ -150,18 +156,11 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Icon(
-          Icons.check_circle_outline,
-          color: Colors.green,
-          size: 64,
-        ),
+        const Icon(Icons.check_circle_outline, color: Colors.green, size: 64),
         const SizedBox(height: 24),
         const Text(
           'Email Sent!',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),
@@ -171,7 +170,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         ),
         const SizedBox(height: 32),
         AppButton(
-          onPressed: () => context.go('/login'),
+          onPressed: () => _navigationService.navigateTo(context, '/login'),
           text: 'Back to Login',
         ),
       ],

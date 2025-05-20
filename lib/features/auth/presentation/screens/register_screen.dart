@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/services/auth_service.dart';
-import '../../../../core/utils/logger.dart';
 import '../../../../core/di/injection.dart';
-import '../../../../shared/widgets/app_text_field.dart';
+import '../../../../core/services/auth_service.dart';
+import '../../../../core/services/navigation_service.dart';
+import '../../../../core/utils/logger.dart';
+import '../../../../shared/widgets/app_bar.dart';
 import '../../../../shared/widgets/app_button.dart';
+import '../../../../shared/widgets/app_text_field.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
@@ -24,6 +26,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   String? _errorMessage;
 
   final _authService = getIt<AuthService>();
+  final _navigationService = getIt<NavigationService>();
 
   @override
   void dispose() {
@@ -46,9 +49,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         _emailController.text.trim(),
         _passwordController.text,
       );
-      
+
       if (mounted) {
-        context.go('/home');
+        _navigationService.navigateTo(context, '/home');
       }
     } catch (e) {
       AppLogger.error('Register error', e);
@@ -66,9 +69,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final canPop = context.canPop();
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Register'),
+      appBar: AppBarWidget(
+        title: 'Register',
+        showBackButton: canPop,
+        leading:
+            !canPop
+                ? IconButton(
+                  icon: const Icon(Icons.home),
+                  onPressed: () => _navigationService.navigateTo(context, '/home'),
+                )
+                : null,
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -90,9 +103,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                     child: Text(
                       _errorMessage!,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onErrorContainer,
-                      ),
+                      style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -154,9 +165,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Already have an account?"),
+                    const Text('Already have an account?'),
                     TextButton(
-                      onPressed: () => context.push('/login'),
+                      onPressed: () => _navigationService.goBack(context),
                       child: const Text('Login'),
                     ),
                   ],
