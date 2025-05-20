@@ -1,8 +1,10 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
+import 'package:injectable/injectable.dart';
 
 import '../utils/logger.dart';
 
+@lazySingleton
 class AnalyticsService {
   final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
   FirebaseAnalyticsObserver? _observer;
