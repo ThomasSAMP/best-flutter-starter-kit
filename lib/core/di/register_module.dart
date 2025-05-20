@@ -29,7 +29,6 @@ abstract class RegisterModule {
     enableLogging: EnvConfig.instance.enableLogging,
   );
 
-  // Enregistrez l'observateur de navigation
   @lazySingleton
   AppNavigationObserver get navigationObserver => AppNavigationObserver();
 }

@@ -118,6 +118,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () => _navigationService.navigateTo(context, '/offline-test'),
                       ),
+                      ListTile(
+                        title: const Text('Test Cache d\'Images'),
+                        subtitle: const Text('Gérer le cache d\'images'),
+                        leading: const Icon(Icons.image_outlined),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => _navigationService.navigateTo(context, '/image-cache-test'),
+                      ),
                     ],
                   ),
                   _buildSection(

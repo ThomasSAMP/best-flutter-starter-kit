@@ -12,11 +12,14 @@ dependencies:
 
   # UI
   cupertino_icons: ^1.0.8
-  cached_network_image: ^3.4.1
   flutter_svg: ^2.1.0
   shimmer: ^3.0.0
   flutter_staggered_grid_view: ^0.7.0
   lottie: ^3.3.1
+
+  # Cache
+  cached_network_image: ^3.4.1
+  flutter_cache_manager: ^3.4.1
 
   # State Management
   flutter_riverpod: ^2.6.1
