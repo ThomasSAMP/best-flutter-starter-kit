@@ -70,6 +70,7 @@ linter:
 
 analyzer:
   errors:
+    lines_longer_than_80_chars: ignore
     missing_required_param: error
     missing_return: error
     must_be_immutable: error
