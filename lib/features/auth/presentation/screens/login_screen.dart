@@ -43,6 +43,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _errorMessage = null;
     });
 
+    // Récupérez le paramètre de redirection AVANT l'appel asynchrone
+    final redirectLocation = _getRedirectLocation(context);
+
     try {
       await _authService.signInWithEmailAndPassword(
         _emailController.text.trim(),
@@ -50,8 +53,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       );
 
       if (mounted) {
-        // Vérifier s'il y a une redirection
-        final redirectLocation = GoRouterState.of(context).uri.queryParameters['redirect'];
         _navigationService.navigateTo(context, redirectLocation ?? '/home');
       }
     } catch (e) {
@@ -65,6 +66,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           _isLoading = false;
         });
       }
+    }
+  }
+
+  // Méthode auxiliaire pour obtenir le paramètre de redirection en toute sécurité
+  String? _getRedirectLocation(BuildContext context) {
+    try {
+      return GoRouterState.of(context).uri.queryParameters['redirect'];
+    } catch (e) {
+      // Si GoRouterState.of(context) échoue, retourner null
+      return null;
     }
   }
 
