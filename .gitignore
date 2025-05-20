@@ -93,3 +93,4 @@ firebase.json
 *.g.dart
 *.freezed.dart
 *.config.dart
+content.txt
