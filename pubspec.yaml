@@ -52,6 +52,8 @@ dependencies:
   # DI
   get_it: ^8.0.3
   injectable: ^2.5.0
+  firebase_crashlytics: ^4.3.5
+  firebase_analytics: ^11.4.5
 
 dev_dependencies:
   flutter_test:
