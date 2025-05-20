@@ -1,12 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../routes/navigation_observer.dart';
 import '../config/env_config.dart';
 import '../network/dio_client.dart';
+import '../services/navigation_service.dart';
 
 @module
 abstract class RegisterModule {
@@ -27,4 +29,12 @@ abstract class RegisterModule {
     baseUrl: EnvConfig.instance.apiUrl,
     enableLogging: EnvConfig.instance.enableLogging,
   );
+
+  // Enregistrez l'observateur de navigation
+  @lazySingleton
+  AppNavigationObserver get navigationObserver => AppNavigationObserver();
+
+  // Enregistrez le service de navigation
+  @lazySingleton
+  NavigationService get navigationService => NavigationService();
 }
