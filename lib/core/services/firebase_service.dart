@@ -4,10 +4,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
-import '../config/env_config.dart';
 import '../di/injection.dart';
 import '../utils/logger.dart';
 import 'analytics_service.dart';
+import 'error_service.dart';
 import 'notification_service.dart';
 
 @lazySingleton
@@ -16,13 +16,8 @@ class FirebaseService {
     try {
       await Firebase.initializeApp();
 
-      // Configure Crashlytics
-      if (!kDebugMode && !EnvConfig.isDevelopment) {
-        await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-        FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-      } else {
-        await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
-      }
+      // Initialiser le service d'erreur en premier
+      await getIt<ErrorService>().initialize();
 
       // Configurer le gestionnaire de messages en arrière-plan
       FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -37,6 +32,7 @@ class FirebaseService {
     } catch (e, stackTrace) {
       AppLogger.error('Failed to initialize Firebase', e, stackTrace);
       if (!kDebugMode) {
+        // Utiliser directement FirebaseCrashlytics ici car ErrorService pourrait ne pas être initialisé
         await FirebaseCrashlytics.instance.recordError(e, stackTrace);
       }
     }

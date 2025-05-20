@@ -12,6 +12,7 @@ import '../features/home/presentation/screens/home_screen.dart';
 import '../features/notifications/presentation/screens/notifications_screen.dart';
 import '../features/profile/presentation/screens/profile_screen.dart';
 import '../features/settings/presentation/screens/analytics_test_screen.dart';
+import '../features/settings/presentation/screens/error_test_screen.dart';
 import '../features/settings/presentation/screens/notification_test_screen.dart';
 import '../features/settings/presentation/screens/settings_screen.dart';
 import '../shared/models/tab_item.dart';
@@ -125,6 +126,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder:
             (context, state) =>
                 const NoTransitionPage(child: AnalyticsTestScreen(), name: 'AnalyticsTestScreen'),
+      ),
+      GoRoute(
+        path: '/error-test',
+        name: 'error-test',
+        pageBuilder:
+            (context, state) =>
+                const NoTransitionPage(child: ErrorTestScreen(), name: 'ErrorTestScreen'),
       ),
 
       // Main app shell with bottom navigation

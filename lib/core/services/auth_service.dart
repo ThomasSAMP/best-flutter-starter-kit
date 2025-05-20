@@ -4,13 +4,15 @@ import 'package:injectable/injectable.dart';
 import '../../shared/repositories/user_repository.dart';
 import '../errors/auth_exception.dart';
 import '../utils/logger.dart';
+import 'error_service.dart';
 
 @lazySingleton
 class AuthService {
   final FirebaseAuth _firebaseAuth;
   final UserRepository _userRepository;
+  final ErrorService? _errorService;
 
-  AuthService(this._firebaseAuth, this._userRepository);
+  AuthService(this._firebaseAuth, this._userRepository, [this._errorService]);
 
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
@@ -27,9 +29,29 @@ class AuthService {
       return userCredential.user;
     } on FirebaseAuthException catch (e, stackTrace) {
       AppLogger.error('Sign in error', e, stackTrace);
+      // Enregistrer l'erreur dans Crashlytics
+      // Vérifier si _errorService est disponible
+      if (_errorService != null) {
+        await _errorService.recordError(
+          e,
+          stackTrace,
+          reason: 'Sign in error: ${e.code}',
+          information: ['email: $email'],
+        );
+      }
       throw AuthException.fromFirebaseAuthException(e);
     } catch (e, stackTrace) {
       AppLogger.error('Sign in error', e, stackTrace);
+      // Enregistrer l'erreur dans Crashlytics
+      // Vérifier si _errorService est disponible
+      if (_errorService != null) {
+        await _errorService.recordError(
+          e,
+          stackTrace,
+          reason: 'Sign in error: unexpected',
+          information: ['email: $email'],
+        );
+      }
       throw AuthException(message: 'An unexpected error occurred');
     }
   }

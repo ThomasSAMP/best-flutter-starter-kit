@@ -97,6 +97,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () => _navigationService.navigateTo(context, '/analytics-test'),
                       ),
+                      ListTile(
+                        title: const Text('Test Error Handling'),
+                        subtitle: const Text('Trigger and record errors'),
+                        leading: const Icon(Icons.error_outline),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => _navigationService.navigateTo(context, '/error-test'),
+                      ),
                     ],
                   ),
                   _buildSection(
