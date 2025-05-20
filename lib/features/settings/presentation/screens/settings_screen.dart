@@ -1,0 +1,196 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+
+import '../../../../shared/providers/theme_provider.dart';
+
+class SettingsScreen extends ConsumerStatefulWidget {
+  const SettingsScreen({Key? key}) : super(key: key);
+
+  @override
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  PackageInfo? _packageInfo;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPackageInfo();
+  }
+
+  Future<void> _loadPackageInfo() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    if (mounted) {
+      setState(() {
+        _packageInfo = packageInfo;
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final themeMode = ref.watch(themeProvider);
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Settings')),
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : ListView(
+                children: [
+                  const SizedBox(height: 16),
+                  _buildSection(
+                    title: 'Appearance',
+                    children: [
+                      ListTile(
+                        title: const Text('Theme'),
+                        subtitle: Text(themeMode.name),
+                        leading: Icon(themeMode.icon),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => _showThemeDialog(context),
+                      ),
+                    ],
+                  ),
+                  _buildSection(
+                    title: 'Notifications',
+                    children: [
+                      SwitchListTile(
+                        title: const Text('Push Notifications'),
+                        subtitle: const Text('Receive push notifications'),
+                        value: true,
+                        onChanged: (value) {
+                          // Toggle push notifications
+                        },
+                      ),
+                      SwitchListTile(
+                        title: const Text('Email Notifications'),
+                        subtitle: const Text('Receive email notifications'),
+                        value: false,
+                        onChanged: (value) {
+                          // Toggle email notifications
+                        },
+                      ),
+                    ],
+                  ),
+                  _buildSection(
+                    title: 'Privacy',
+                    children: [
+                      ListTile(
+                        title: const Text('Privacy Policy'),
+                        leading: const Icon(Icons.privacy_tip_outlined),
+                        trailing: const Icon(Icons.open_in_new),
+                        onTap: () {
+                          // Open privacy policy
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Terms of Service'),
+                        leading: const Icon(Icons.description_outlined),
+                        trailing: const Icon(Icons.open_in_new),
+                        onTap: () {
+                          // Open terms of service
+                        },
+                      ),
+                      ListTile(
+                        title: const Text('Delete Account'),
+                        leading: const Icon(
+                          Icons.delete_outline,
+                          color: Colors.red,
+                        ),
+                        onTap: () {
+                          // Show delete account confirmation
+                        },
+                      ),
+                    ],
+                  ),
+                  _buildSection(
+                    title: 'About',
+                    children: [
+                      ListTile(
+                        title: const Text('Version'),
+                        subtitle: Text(
+                          '${_packageInfo?.version} (${_packageInfo?.buildNumber})',
+                        ),
+                        leading: const Icon(Icons.info_outline),
+                      ),
+                      ListTile(
+                        title: const Text('Licenses'),
+                        leading: const Icon(Icons.article_outlined),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () {
+                          showLicensePage(
+                            context: context,
+                            applicationName: _packageInfo?.appName,
+                            applicationVersion: _packageInfo?.version,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+    );
+  }
+
+  Widget _buildSection({
+    required String title,
+    required List<Widget> children,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          child: Text(
+            title,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.primary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        ...children,
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
+  void _showThemeDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Choose Theme'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children:
+                AppThemeMode.values.map((mode) {
+                  return RadioListTile<AppThemeMode>(
+                    title: Text(mode.name),
+                    value: mode,
+                    groupValue: ref.read(themeProvider),
+                    onChanged: (value) {
+                      if (value != null) {
+                        ref.read(themeProvider.notifier).setThemeMode(value);
+                        Navigator.pop(context);
+                      }
+                    },
+                    secondary: Icon(mode.icon),
+                  );
+                }).toList(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
