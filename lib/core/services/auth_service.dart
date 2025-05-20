@@ -1,14 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../shared/repositories/user_repository.dart';
 import '../errors/auth_exception.dart';
 import '../utils/logger.dart';
 
 @lazySingleton
 class AuthService {
   final FirebaseAuth _firebaseAuth;
+  final UserRepository _userRepository;
 
-  AuthService(this._firebaseAuth);
+  AuthService(this._firebaseAuth, this._userRepository);
 
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
@@ -16,10 +18,7 @@ class AuthService {
 
   bool get isAuthenticated => currentUser != null;
 
-  Future<User?> signInWithEmailAndPassword(
-    String email,
-    String password,
-  ) async {
+  Future<User?> signInWithEmailAndPassword(String email, String password) async {
     try {
       final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
@@ -35,16 +34,22 @@ class AuthService {
     }
   }
 
-  Future<User?> createUserWithEmailAndPassword(
-    String email,
-    String password,
-  ) async {
+  Future<User?> createUserWithEmailAndPassword(String email, String password) async {
     try {
+      // 1. Créer l'utilisateur dans Firebase Auth
       final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return userCredential.user;
+
+      final user = userCredential.user;
+
+      if (user != null) {
+        // 2. Créer l'utilisateur dans Firestore
+        await _userRepository.createUser(user);
+      }
+
+      return user;
     } on FirebaseAuthException catch (e, stackTrace) {
       AppLogger.error('Sign up error', e, stackTrace);
       throw AuthException.fromFirebaseAuthException(e);

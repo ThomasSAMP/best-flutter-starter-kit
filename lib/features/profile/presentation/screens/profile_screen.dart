@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/services/auth_service.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/services/auth_service.dart';
 import '../../../../shared/widgets/app_button.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
@@ -92,18 +92,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
           const SizedBox(height: 24),
           Center(
-            child: Text(
-              user.email ?? 'No email',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            child: Text(user.email ?? 'No email', style: Theme.of(context).textTheme.titleLarge),
           ),
           const SizedBox(height: 8),
-          Center(
-            child: Text(
-              'User ID: ${user.uid}',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ),
+          Center(child: Text('User ID: ${user.uid}', style: Theme.of(context).textTheme.bodySmall)),
           const SizedBox(height: 32),
           const Divider(),
           ListTile(
@@ -131,10 +123,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
           if (_isLoading)
             const Center(
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: CircularProgressIndicator(),
-              ),
+              child: Padding(padding: EdgeInsets.all(16.0), child: CircularProgressIndicator()),
             ),
         ],
       ),

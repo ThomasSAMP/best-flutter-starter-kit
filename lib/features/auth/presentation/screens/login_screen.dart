@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/di/injection.dart';
 import '../../../../core/services/auth_service.dart';
 import '../../../../core/utils/logger.dart';
-import '../../../../core/di/injection.dart';
-import '../../../../shared/widgets/app_text_field.dart';
 import '../../../../shared/widgets/app_button.dart';
+import '../../../../shared/widgets/app_text_field.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
@@ -46,7 +46,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       );
 
       if (mounted) {
-        context.go('/home');
+        // Vérifier s'il y a une redirection
+        final redirectLocation = GoRouterState.of(context).uri.queryParameters['redirect'];
+        context.go(redirectLocation ?? '/home');
       }
     } catch (e) {
       AppLogger.error('Login error', e);
@@ -86,9 +88,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     child: Text(
                       _errorMessage!,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onErrorContainer,
-                      ),
+                      style: TextStyle(color: Theme.of(context).colorScheme.onErrorContainer),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -102,9 +102,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email';
                     }
-                    if (!RegExp(
-                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                    ).hasMatch(value)) {
+                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
                       return 'Please enter a valid email';
                     }
                     return null;
