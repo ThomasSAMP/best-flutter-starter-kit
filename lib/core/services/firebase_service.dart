@@ -7,6 +7,7 @@ import 'package:injectable/injectable.dart';
 import '../config/env_config.dart';
 import '../di/injection.dart';
 import '../utils/logger.dart';
+import 'analytics_service.dart';
 import 'notification_service.dart';
 
 @lazySingleton
@@ -28,6 +29,9 @@ class FirebaseService {
 
       // Initialiser le service de notification
       await getIt<NotificationService>().initialize();
+
+      // Initialiser le service d'analytics
+      await getIt<AnalyticsService>().initialize();
 
       AppLogger.info('Firebase initialized successfully');
     } catch (e, stackTrace) {

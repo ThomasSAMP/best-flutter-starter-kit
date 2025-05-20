@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../routes/navigation_observer.dart';
 import '../config/env_config.dart';
 import '../network/dio_client.dart';
+import '../services/analytics_service.dart';
 import '../services/navigation_service.dart';
 
 @module
@@ -37,4 +38,7 @@ abstract class RegisterModule {
   // Enregistrez le service de navigation
   @lazySingleton
   NavigationService get navigationService => NavigationService();
+
+  @lazySingleton
+  AnalyticsService get analyticsService => AnalyticsService();
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/di/injection.dart';
+import '../core/services/analytics_service.dart';
 import '../features/auth/presentation/screens/forgot_password_screen.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/auth/presentation/screens/register_screen.dart';
@@ -10,6 +11,7 @@ import '../features/error/presentation/screens/not_found_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
 import '../features/notifications/presentation/screens/notifications_screen.dart';
 import '../features/profile/presentation/screens/profile_screen.dart';
+import '../features/settings/presentation/screens/analytics_test_screen.dart';
 import '../features/settings/presentation/screens/notification_test_screen.dart';
 import '../features/settings/presentation/screens/settings_screen.dart';
 import '../shared/models/tab_item.dart';
@@ -56,12 +58,13 @@ final routerProvider = Provider<GoRouter>((ref) {
   final tabs = ref.watch(tabsProvider);
   final isAuthenticated = ref.watch(isAuthenticatedProvider);
   final observer = getIt<AppNavigationObserver>();
+  final analyticsObserver = getIt<AnalyticsService>().observer;
 
   final router = GoRouter(
     initialLocation: '/home',
     navigatorKey: rootNavigatorKey,
     debugLogDiagnostics: true,
-    observers: [observer],
+    observers: [observer, analyticsObserver],
     redirect: (context, state) {
       // Vérifier si l'utilisateur tente d'accéder à une route protégée
       final isGoingToProtectedRoute =
@@ -115,6 +118,13 @@ final routerProvider = Provider<GoRouter>((ref) {
               child: NotificationTestScreen(),
               name: 'NotificationTestScreen',
             ),
+      ),
+      GoRoute(
+        path: '/analytics-test',
+        name: 'analytics-test',
+        pageBuilder:
+            (context, state) =>
+                const NoTransitionPage(child: AnalyticsTestScreen(), name: 'AnalyticsTestScreen'),
       ),
 
       // Main app shell with bottom navigation

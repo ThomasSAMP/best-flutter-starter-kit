@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/services/analytics_service.dart';
 import '../../../../core/services/auth_service.dart';
 import '../../../../core/services/navigation_service.dart';
 import '../../../../core/utils/logger.dart';
@@ -21,6 +22,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>(debugLabel: 'loginFormKey');
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _analyticsService = getIt<AnalyticsService>();
+
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -50,6 +53,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         _emailController.text.trim(),
         _passwordController.text,
       );
+
+      await _analyticsService.logLogin(method: 'email');
 
       if (mounted) {
         _navigationService.navigateTo(context, redirectLocation ?? '/home');
