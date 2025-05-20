@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:flutter_template/shared/widgets/app_button.dart';
 import 'package:flutter_template/shared/widgets/app_text_field.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('AppButton', () {
     testWidgets('renders correctly with text', (WidgetTester tester) async {
       // Build our app and trigger a frame.
       await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(body: AppButton(text: 'Test Button', onPressed: null)),
-        ),
+        const MaterialApp(home: Scaffold(body: AppButton(text: 'Test Button', onPressed: null))),
       );
 
       // Verify that the button renders with the correct text.
@@ -20,7 +16,7 @@ void main() {
     });
 
     testWidgets('calls onPressed when tapped', (WidgetTester tester) async {
-      bool buttonPressed = false;
+      var buttonPressed = false;
 
       // Build our app and trigger a frame.
       await tester.pumpWidget(
@@ -51,10 +47,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: AppTextField(
-              controller: TextEditingController(),
-              label: 'Test Label',
-            ),
+            body: AppTextField(controller: TextEditingController(), label: 'Test Label'),
           ),
         ),
       );
@@ -64,7 +57,7 @@ void main() {
     });
 
     testWidgets('validates input correctly', (WidgetTester tester) async {
-      final formKey = GlobalKey<FormState>();
+      final formKey = GlobalKey<FormState>(debugLabel: 'inputTestFormKey');
 
       // Build our app and trigger a frame.
       await tester.pumpWidget(

@@ -19,7 +19,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>(debugLabel: 'loginFormKey');
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
