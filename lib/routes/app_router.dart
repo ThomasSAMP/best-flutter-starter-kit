@@ -17,8 +17,8 @@ import '../shared/widgets/app_scaffold.dart';
 import 'navigation_observer.dart';
 import 'page_transitions.dart';
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
-final _shellNavigatorKey = GlobalKey<NavigatorState>();
+final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'rootNavigator');
+final _shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shellNavigator');
 
 final tabsProvider = Provider<List<TabItem>>((ref) {
   return [
@@ -84,18 +84,25 @@ final routerProvider = Provider<GoRouter>((ref) {
       // Auth routes
       GoRoute(
         path: '/login',
-        pageBuilder: (context, state) => FadeTransitionPage(child: const LoginScreen()),
         name: 'login',
+        pageBuilder:
+            (context, state) => FadeTransitionPage(child: const LoginScreen(), name: 'LoginScreen'),
       ),
       GoRoute(
         path: '/register',
-        pageBuilder: (context, state) => SlideTransitionPage(child: const RegisterScreen()),
         name: 'register',
+        pageBuilder:
+            (context, state) =>
+                SlideTransitionPage(child: const RegisterScreen(), name: 'RegisterScreen'),
       ),
       GoRoute(
         path: '/forgot-password',
-        pageBuilder: (context, state) => SlideTransitionPage(child: const ForgotPasswordScreen()),
         name: 'forgot-password',
+        pageBuilder:
+            (context, state) => SlideTransitionPage(
+              child: const ForgotPasswordScreen(),
+              name: 'ForgotPasswordScreen',
+            ),
       ),
 
       // Main app shell with bottom navigation
@@ -107,23 +114,32 @@ final routerProvider = Provider<GoRouter>((ref) {
         routes: [
           GoRoute(
             path: '/home',
-            pageBuilder: (context, state) => const NoTransitionPage(child: HomeScreen()),
             name: 'home',
+            pageBuilder:
+                (context, state) => const NoTransitionPage(child: HomeScreen(), name: 'HomeScreen'),
           ),
           GoRoute(
             path: '/profile',
-            pageBuilder: (context, state) => const NoTransitionPage(child: ProfileScreen()),
             name: 'profile',
+            pageBuilder:
+                (context, state) =>
+                    const NoTransitionPage(child: ProfileScreen(), name: 'ProfileScreen'),
           ),
           GoRoute(
             path: '/notifications',
-            pageBuilder: (context, state) => const NoTransitionPage(child: NotificationsScreen()),
             name: 'notifications',
+            pageBuilder:
+                (context, state) => const NoTransitionPage(
+                  child: NotificationsScreen(),
+                  name: 'NotificationsScreen',
+                ),
           ),
           GoRoute(
             path: '/settings',
-            pageBuilder: (context, state) => const NoTransitionPage(child: SettingsScreen()),
             name: 'settings',
+            pageBuilder:
+                (context, state) =>
+                    const NoTransitionPage(child: SettingsScreen(), name: 'SettingsScreen'),
           ),
         ],
       ),

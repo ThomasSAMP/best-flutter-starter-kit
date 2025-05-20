@@ -39,13 +39,28 @@ class AppNavigationObserver extends NavigatorObserver {
   }
 
   void _logNavigation(String action, Route<dynamic>? route, Route<dynamic>? previousRoute) {
-    final routeName = route?.settings.name ?? 'unknown';
-    final previousRouteName = previousRoute?.settings.name ?? 'none';
+    // Extraire le nom de la route de manière plus robuste
+    final routeName = _getRouteName(route);
+    final previousRouteName = _getRouteName(previousRoute);
 
     AppLogger.debug('Navigation: $action - From: $previousRouteName To: $routeName');
+  }
 
-    // Ici, vous pourriez également envoyer des événements à Firebase Analytics
-    // ou à d'autres services d'analyse
+  String _getRouteName(Route<dynamic>? route) {
+    if (route == null) return 'none';
+
+    // Essayer d'obtenir le nom de la route à partir des paramètres
+    if (route.settings.name != null && route.settings.name!.isNotEmpty) {
+      return route.settings.name!;
+    }
+
+    // Essayer d'obtenir des informations à partir des arguments
+    if (route.settings.arguments != null) {
+      return 'Route(args: ${route.settings.arguments})';
+    }
+
+    // Dernier recours: utiliser le type de route
+    return route.runtimeType.toString();
   }
 
   bool canGoBack() {
@@ -54,6 +69,6 @@ class AppNavigationObserver extends NavigatorObserver {
 
   String getCurrentRouteName() {
     if (routeStack.isEmpty) return '';
-    return routeStack.last.settings.name ?? '';
+    return _getRouteName(routeStack.last);
   }
 }
