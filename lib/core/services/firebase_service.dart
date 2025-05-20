@@ -32,6 +32,10 @@ class FirebaseService {
       // Initialiser le service de mise à jour
       await getIt<UpdateService>().initialize();
 
+      // Initialiser le service de connectivité
+      // await getIt<ConnectivityService>().initialize();
+      // ==> Pas besoin d'initialiser le service de connectivité explicitement car le constructeur s'en charge
+
       AppLogger.info('Firebase initialized successfully');
     } catch (e, stackTrace) {
       AppLogger.error('Failed to initialize Firebase', e, stackTrace);

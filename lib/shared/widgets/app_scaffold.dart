@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../models/tab_item.dart';
+import 'connectivity_indicator.dart';
 
 class AppScaffold extends StatelessWidget {
   final Widget child;
@@ -35,7 +36,14 @@ class AppScaffold extends StatelessWidget {
         return await _showExitDialog(context) ?? false;
       },
       child: Scaffold(
-        body: child,
+        body: Column(
+          children: [
+            // Ajouter l'indicateur de connectivité en haut
+            const ConnectivityIndicator(),
+            // Contenu principal
+            Expanded(child: child),
+          ],
+        ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: _getCurrentIndex(),

@@ -111,6 +111,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () => _navigationService.navigateTo(context, '/update-test'),
                       ),
+                      ListTile(
+                        title: const Text('Test Offline Mode'),
+                        subtitle: const Text('Create and sync data offline'),
+                        leading: const Icon(Icons.wifi_off_outlined),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => _navigationService.navigateTo(context, '/offline-test'),
+                      ),
                     ],
                   ),
                   _buildSection(

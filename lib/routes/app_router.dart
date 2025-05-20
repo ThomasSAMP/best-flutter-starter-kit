@@ -14,6 +14,7 @@ import '../features/profile/presentation/screens/profile_screen.dart';
 import '../features/settings/presentation/screens/analytics_test_screen.dart';
 import '../features/settings/presentation/screens/error_test_screen.dart';
 import '../features/settings/presentation/screens/notification_test_screen.dart';
+import '../features/settings/presentation/screens/offline_test_screen.dart';
 import '../features/settings/presentation/screens/settings_screen.dart';
 import '../features/settings/presentation/screens/update_test_screen.dart';
 import '../shared/models/tab_item.dart';
@@ -141,6 +142,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder:
             (context, state) =>
                 const NoTransitionPage(child: UpdateTestScreen(), name: 'UpdateTestScreen'),
+      ),
+      GoRoute(
+        path: '/offline-test',
+        name: 'offline-test',
+        pageBuilder:
+            (context, state) =>
+                const NoTransitionPage(child: OfflineTestScreen(), name: 'OfflineTestScreen'),
       ),
 
       // Main app shell with bottom navigation
