@@ -154,6 +154,51 @@ class _ErrorTestScreenState extends ConsumerState<ErrorTestScreen> {
     }
   }
 
+  Future<void> _addBreadcrumbs() async {
+    setState(() {
+      _isLoading = true;
+      _statusMessage = null;
+    });
+
+    try {
+      // Ajouter quelques breadcrumbs
+      await _errorService.addBreadcrumb('User viewed product', data: {'product_id': '12345'});
+      await _errorService.addBreadcrumb(
+        'User added to cart',
+        data: {'product_id': '12345', 'quantity': 2},
+      );
+      await _errorService.addBreadcrumb('User started checkout');
+
+      setState(() {
+        _statusMessage = 'Breadcrumbs added successfully';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _setDeviceInfo() async {
+    setState(() {
+      _isLoading = true;
+      _statusMessage = null;
+    });
+
+    try {
+      // Définir les informations sur l'appareil
+      await _errorService.setDeviceInfo();
+
+      setState(() {
+        _statusMessage = 'Device info set successfully';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   void _forceCrash() {
     showDialog(
       context: context,
@@ -237,6 +282,18 @@ class _ErrorTestScreenState extends ConsumerState<ErrorTestScreen> {
             AppButton(
               text: 'Add Custom Keys',
               onPressed: _isLoading ? null : _addCustomKeys,
+              isLoading: _isLoading,
+            ),
+            const SizedBox(height: 16),
+            AppButton(
+              text: 'Add Breadcrumbs',
+              onPressed: _isLoading ? null : _addBreadcrumbs,
+              isLoading: _isLoading,
+            ),
+            const SizedBox(height: 16),
+            AppButton(
+              text: 'Set Device Info',
+              onPressed: _isLoading ? null : _setDeviceInfo,
               isLoading: _isLoading,
             ),
             const SizedBox(height: 16),
