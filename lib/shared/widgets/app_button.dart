@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../core/di/injection.dart';
+import '../../core/services/haptic_service.dart';
+
 enum AppButtonType { primary, secondary, outline, text }
 
 class AppButton extends StatelessWidget {
@@ -13,9 +16,11 @@ class AppButton extends StatelessWidget {
   final double? height;
   final EdgeInsetsGeometry? padding;
   final BorderRadius? borderRadius;
+  final bool useHapticFeedback;
+  final HapticFeedbackType hapticFeedbackType;
 
   const AppButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.type = AppButtonType.primary,
@@ -26,70 +31,71 @@ class AppButton extends StatelessWidget {
     this.height,
     this.padding,
     this.borderRadius,
-  }) : super(key: key);
+    this.useHapticFeedback = true,
+    this.hapticFeedbackType = HapticFeedbackType.buttonPress,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final hapticService = getIt<HapticService>();
+
+    // Fonction pour gérer l'appui sur le bouton avec retour haptique
+    void handlePress() {
+      if (onPressed != null) {
+        if (useHapticFeedback) {
+          hapticService.feedback(hapticFeedbackType);
+        }
+        onPressed!();
+      }
+    }
 
     Widget button;
 
     switch (type) {
       case AppButtonType.primary:
         button = ElevatedButton(
-          onPressed: isLoading ? null : onPressed,
+          onPressed: isLoading ? null : handlePress,
           style: ElevatedButton.styleFrom(
             padding: padding ?? const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: borderRadius ?? BorderRadius.circular(8),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: borderRadius ?? BorderRadius.circular(8)),
           ),
           child: _buildButtonContent(theme),
         );
         break;
       case AppButtonType.secondary:
         button = ElevatedButton(
-          onPressed: isLoading ? null : onPressed,
+          onPressed: isLoading ? null : handlePress,
           style: ElevatedButton.styleFrom(
             backgroundColor: theme.colorScheme.secondary,
             foregroundColor: theme.colorScheme.onSecondary,
             padding: padding ?? const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: borderRadius ?? BorderRadius.circular(8),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: borderRadius ?? BorderRadius.circular(8)),
           ),
           child: _buildButtonContent(theme),
         );
         break;
       case AppButtonType.outline:
         button = OutlinedButton(
-          onPressed: isLoading ? null : onPressed,
+          onPressed: isLoading ? null : handlePress,
           style: OutlinedButton.styleFrom(
             padding: padding ?? const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: borderRadius ?? BorderRadius.circular(8),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: borderRadius ?? BorderRadius.circular(8)),
           ),
           child: _buildButtonContent(theme),
         );
         break;
       case AppButtonType.text:
         button = TextButton(
-          onPressed: isLoading ? null : onPressed,
-          style: TextButton.styleFrom(
-            padding: padding ?? const EdgeInsets.symmetric(vertical: 16),
-          ),
+          onPressed: isLoading ? null : handlePress,
+          style: TextButton.styleFrom(padding: padding ?? const EdgeInsets.symmetric(vertical: 16)),
           child: _buildButtonContent(theme),
         );
         break;
     }
 
     if (fullWidth) {
-      return SizedBox(
-        width: width ?? double.infinity,
-        height: height,
-        child: button,
-      );
+      return SizedBox(width: width ?? double.infinity, height: height, child: button);
     }
 
     return SizedBox(width: width, height: height, child: button);
@@ -100,10 +106,7 @@ class AppButton extends StatelessWidget {
       return SizedBox(
         height: 20,
         width: 20,
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          color: _getLoadingColor(theme),
-        ),
+        child: CircularProgressIndicator(strokeWidth: 2, color: _getLoadingColor(theme)),
       );
     }
 

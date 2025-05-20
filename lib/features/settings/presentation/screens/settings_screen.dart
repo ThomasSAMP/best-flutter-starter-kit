@@ -125,6 +125,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () => _navigationService.navigateTo(context, '/image-cache-test'),
                       ),
+                      ListTile(
+                        title: const Text('Test Haptique'),
+                        subtitle: const Text('Tester les retours haptiques'),
+                        leading: const Icon(Icons.vibration),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => _navigationService.navigateTo(context, '/haptic-test'),
+                      ),
                     ],
                   ),
                   _buildSection(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/di/injection.dart';
+import '../../core/services/haptic_service.dart';
 import '../models/tab_item.dart';
 import 'connectivity_indicator.dart';
 
@@ -18,6 +20,8 @@ class AppScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hapticService = getIt<HapticService>();
+
     return WillPopScope(
       onWillPop: () async {
         // Vérifier si on peut naviguer en arrière dans le navigateur actuel
@@ -47,7 +51,7 @@ class AppScaffold extends StatelessWidget {
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: _getCurrentIndex(),
-          onTap: (index) => _onItemTapped(context, index),
+          onTap: (index) => _onItemTapped(context, index, hapticService),
           items:
               tabs.map((tab) {
                 return BottomNavigationBarItem(
@@ -66,14 +70,19 @@ class AppScaffold extends StatelessWidget {
     return index < 0 ? 0 : index;
   }
 
-  void _onItemTapped(BuildContext context, int index) {
+  void _onItemTapped(BuildContext context, int index, HapticService hapticService) {
     final destination = tabs[index].initialLocation;
     if (destination != currentPath) {
+      // Déclencher un retour haptique lors du changement d'onglet
+      hapticService.feedback(HapticFeedbackType.tabSelection);
       context.go(destination);
     }
   }
 
   Future<bool?> _showExitDialog(BuildContext context) {
+    // Déclencher un retour haptique pour la boîte de dialogue
+    getIt<HapticService>().feedback(HapticFeedbackType.medium);
+
     return showDialog<bool>(
       context: context,
       builder:
@@ -86,7 +95,11 @@ class AppScaffold extends StatelessWidget {
                 child: const Text('Cancel'),
               ),
               TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
+                onPressed: () {
+                  // Déclencher un retour haptique pour confirmer la sortie
+                  getIt<HapticService>().feedback(HapticFeedbackType.heavy);
+                  Navigator.of(context).pop(true);
+                },
                 child: const Text('Exit'),
               ),
             ],

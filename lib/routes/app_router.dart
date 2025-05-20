@@ -13,6 +13,7 @@ import '../features/notifications/presentation/screens/notifications_screen.dart
 import '../features/profile/presentation/screens/profile_screen.dart';
 import '../features/settings/presentation/screens/analytics_test_screen.dart';
 import '../features/settings/presentation/screens/error_test_screen.dart';
+import '../features/settings/presentation/screens/haptic_test_screen.dart';
 import '../features/settings/presentation/screens/image_cache_test_screen.dart';
 import '../features/settings/presentation/screens/notification_test_screen.dart';
 import '../features/settings/presentation/screens/offline_test_screen.dart';
@@ -157,6 +158,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder:
             (context, state) =>
                 const NoTransitionPage(child: ImageCacheTestScreen(), name: 'ImageCacheTestScreen'),
+      ),
+      GoRoute(
+        path: '/haptic-test',
+        name: 'haptic-test',
+        pageBuilder:
+            (context, state) =>
+                const NoTransitionPage(child: HapticTestScreen(), name: 'HapticTestScreen'),
       ),
 
       // Main app shell with bottom navigation
