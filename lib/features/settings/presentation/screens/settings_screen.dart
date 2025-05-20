@@ -104,6 +104,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () => _navigationService.navigateTo(context, '/error-test'),
                       ),
+                      ListTile(
+                        title: const Text('Test App Updates'),
+                        subtitle: const Text('Check for app updates'),
+                        leading: const Icon(Icons.system_update_outlined),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => _navigationService.navigateTo(context, '/update-test'),
+                      ),
                     ],
                   ),
                   _buildSection(

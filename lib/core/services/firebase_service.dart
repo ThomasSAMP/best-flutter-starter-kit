@@ -9,6 +9,7 @@ import '../utils/logger.dart';
 import 'analytics_service.dart';
 import 'error_service.dart';
 import 'notification_service.dart';
+import 'update_service.dart';
 
 @lazySingleton
 class FirebaseService {
@@ -27,6 +28,9 @@ class FirebaseService {
 
       // Initialiser le service d'analytics
       await getIt<AnalyticsService>().initialize();
+
+      // Initialiser le service de mise à jour
+      await getIt<UpdateService>().initialize();
 
       AppLogger.info('Firebase initialized successfully');
     } catch (e, stackTrace) {

@@ -229,7 +229,7 @@ class _ErrorTestScreenState extends ConsumerState<ErrorTestScreen> {
 
     return Scaffold(
       appBar: AppBarWidget(
-        title: 'Notification Test',
+        title: 'Error Test',
         showBackButton: canPop,
         leading:
             !canPop

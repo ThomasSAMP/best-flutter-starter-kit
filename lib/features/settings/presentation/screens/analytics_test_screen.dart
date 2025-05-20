@@ -154,7 +154,7 @@ class _AnalyticsTestScreenState extends ConsumerState<AnalyticsTestScreen> {
 
     return Scaffold(
       appBar: AppBarWidget(
-        title: 'Notification Test',
+        title: 'Analytics Test',
         showBackButton: canPop,
         leading:
             !canPop

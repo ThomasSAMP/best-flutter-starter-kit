@@ -15,6 +15,7 @@ import '../features/settings/presentation/screens/analytics_test_screen.dart';
 import '../features/settings/presentation/screens/error_test_screen.dart';
 import '../features/settings/presentation/screens/notification_test_screen.dart';
 import '../features/settings/presentation/screens/settings_screen.dart';
+import '../features/settings/presentation/screens/update_test_screen.dart';
 import '../shared/models/tab_item.dart';
 import '../shared/providers/auth_provider.dart';
 import '../shared/widgets/app_scaffold.dart';
@@ -133,6 +134,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         pageBuilder:
             (context, state) =>
                 const NoTransitionPage(child: ErrorTestScreen(), name: 'ErrorTestScreen'),
+      ),
+      GoRoute(
+        path: '/update-test',
+        name: 'update-test',
+        pageBuilder:
+            (context, state) =>
+                const NoTransitionPage(child: UpdateTestScreen(), name: 'UpdateTestScreen'),
       ),
 
       // Main app shell with bottom navigation
