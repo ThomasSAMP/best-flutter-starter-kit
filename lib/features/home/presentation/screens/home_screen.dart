@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/services/auth_service.dart';
+import '../../../../core/services/navigation_service.dart';
+import '../../../../shared/widgets/app_bar.dart';
 import '../../../../shared/widgets/app_button.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -12,10 +13,11 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authService = getIt<AuthService>();
+    final navigationService = getIt<NavigationService>();
     final user = authService.currentUser;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
+      appBar: const AppBarWidget(title: 'Home', showBackButton: false),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -35,7 +37,7 @@ class HomeScreen extends ConsumerWidget {
               if (user == null)
                 AppButton(
                   text: 'Sign In',
-                  onPressed: () => context.go('/login'),
+                  onPressed: () => navigationService.navigateTo(context, '/login'),
                   icon: Icons.login,
                 ),
             ],

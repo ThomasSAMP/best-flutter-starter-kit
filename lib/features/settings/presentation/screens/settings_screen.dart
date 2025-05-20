@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../../core/di/injection.dart';
+import '../../../../core/services/navigation_service.dart';
 import '../../../../shared/providers/theme_provider.dart';
+import '../../../../shared/widgets/app_bar.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({super.key});
 
   @override
   ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
@@ -14,6 +17,7 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   PackageInfo? _packageInfo;
   bool _isLoading = true;
+  final _navigationService = getIt<NavigationService>();
 
   @override
   void initState() {
@@ -36,7 +40,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final themeMode = ref.watch(themeProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: const AppBarWidget(title: 'Settings', showBackButton: false),
       body:
           _isLoading
               ? const Center(child: CircularProgressIndicator())
@@ -97,12 +101,27 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                       ListTile(
                         title: const Text('Delete Account'),
-                        leading: const Icon(
-                          Icons.delete_outline,
-                          color: Colors.red,
-                        ),
+                        leading: const Icon(Icons.delete_outline, color: Colors.red),
                         onTap: () {
-                          // Show delete account confirmation
+                          _navigationService
+                              .showConfirmationDialog(
+                                context,
+                                title: 'Delete Account',
+                                message:
+                                    'Are you sure you want to delete your account? This action cannot be undone.',
+                                confirmText: 'Delete',
+                                cancelText: 'Cancel',
+                              )
+                              .then((confirmed) {
+                                if (confirmed == true) {
+                                  // Delete account
+                                  _navigationService.showSnackBar(
+                                    context,
+                                    message:
+                                        'Account deletion functionality will be implemented soon.',
+                                  );
+                                }
+                              });
                         },
                       ),
                     ],
@@ -112,9 +131,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     children: [
                       ListTile(
                         title: const Text('Version'),
-                        subtitle: Text(
-                          '${_packageInfo?.version} (${_packageInfo?.buildNumber})',
-                        ),
+                        subtitle: Text('${_packageInfo?.version} (${_packageInfo?.buildNumber})'),
                         leading: const Icon(Icons.info_outline),
                       ),
                       ListTile(
@@ -136,10 +153,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildSection({
-    required String title,
-    required List<Widget> children,
-  }) {
+  Widget _buildSection({required String title, required List<Widget> children}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -184,10 +198,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 }).toList(),
           ),
           actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
+            TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
           ],
         );
       },

@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/di/injection.dart';
+import '../../../../core/services/navigation_service.dart';
+import '../../../../shared/widgets/app_bar.dart';
+
 class NotificationsScreen extends ConsumerWidget {
-  const NotificationsScreen({Key? key}) : super(key: key);
+  const NotificationsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final navigationService = getIt<NavigationService>();
+
     // Sample notifications data
     final notifications = [
       {
@@ -39,18 +45,15 @@ class NotificationsScreen extends ConsumerWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notifications'),
+      appBar: AppBarWidget(
+        title: 'Notifications',
+        showBackButton: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.done_all),
             onPressed: () {
               // Mark all as read
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('All notifications marked as read'),
-                ),
-              );
+              navigationService.showSnackBar(context, message: 'All notifications marked as read');
             },
             tooltip: 'Mark all as read',
           ),
@@ -62,18 +65,11 @@ class NotificationsScreen extends ConsumerWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.notifications_off_outlined,
-                      size: 64,
-                      color: Colors.grey,
-                    ),
+                    Icon(Icons.notifications_off_outlined, size: 64, color: Colors.grey),
                     SizedBox(height: 16),
                     Text(
                       'No notifications yet',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 8),
                     Text(
@@ -122,9 +118,7 @@ class NotificationsScreen extends ConsumerWidget {
                       notification['title'] as String,
                       style: TextStyle(
                         fontWeight:
-                            notification['read'] as bool
-                                ? FontWeight.normal
-                                : FontWeight.bold,
+                            notification['read'] as bool ? FontWeight.normal : FontWeight.bold,
                       ),
                     ),
                     subtitle: Column(
@@ -151,12 +145,9 @@ class NotificationsScreen extends ConsumerWidget {
                             ),
                     onTap: () {
                       // Mark as read and handle notification
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Notification: ${notification['title']}',
-                          ),
-                        ),
+                      navigationService.showSnackBar(
+                        context,
+                        message: 'Notification: ${notification['title']}',
                       );
                     },
                   );
