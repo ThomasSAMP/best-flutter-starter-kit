@@ -46,5 +46,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 
   print('Background message received: ${message.notification?.title}');
-  // Gérer le message en arrière-plan
+  print('Message data: ${message.data}');
+
+  // TODO: Stocker les données du message pour les traiter lorsque l'application est ouverte
+  // TODO: Par exemple, en utilisant SharedPreferences
 }

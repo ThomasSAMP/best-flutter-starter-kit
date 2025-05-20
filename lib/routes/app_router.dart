@@ -10,6 +10,7 @@ import '../features/error/presentation/screens/not_found_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
 import '../features/notifications/presentation/screens/notifications_screen.dart';
 import '../features/profile/presentation/screens/profile_screen.dart';
+import '../features/settings/presentation/screens/notification_test_screen.dart';
 import '../features/settings/presentation/screens/settings_screen.dart';
 import '../shared/models/tab_item.dart';
 import '../shared/providers/auth_provider.dart';
@@ -104,6 +105,15 @@ final routerProvider = Provider<GoRouter>((ref) {
             (context, state) => SlideTransitionPage(
               child: const ForgotPasswordScreen(),
               name: 'ForgotPasswordScreen',
+            ),
+      ),
+      GoRoute(
+        path: '/notification-test',
+        name: 'notification-test',
+        pageBuilder:
+            (context, state) => const NoTransitionPage(
+              child: NotificationTestScreen(),
+              name: 'NotificationTestScreen',
             ),
       ),
 

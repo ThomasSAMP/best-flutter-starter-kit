@@ -78,6 +78,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           // Toggle email notifications
                         },
                       ),
+                      ListTile(
+                        title: const Text('Test Notifications'),
+                        subtitle: const Text('Send and receive test notifications'),
+                        leading: const Icon(Icons.notifications_active),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => _navigationService.navigateTo(context, '/notification-test'),
+                      ),
                     ],
                   ),
                   _buildSection(

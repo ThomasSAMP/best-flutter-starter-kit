@@ -132,7 +132,7 @@ class NotificationService {
             channel.id,
             channel.name,
             channelDescription: channel.description,
-            icon: android?.smallIcon ?? 'ic_launcher',
+            icon: 'notification_icon',
           ),
           iOS: const DarwinNotificationDetails(),
         ),
