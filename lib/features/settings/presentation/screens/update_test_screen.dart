@@ -60,9 +60,9 @@ class _UpdateTestScreenState extends ConsumerState<UpdateTestScreen> {
       setState(() {
         if (updateInfo != null) {
           _updateInfo = updateInfo;
-          _statusMessage = 'Mise à jour disponible: ${updateInfo.availableVersion}';
+          _statusMessage = 'Update Available: ${updateInfo.availableVersion}';
         } else {
-          _statusMessage = 'Aucune mise à jour disponible';
+          _statusMessage = 'No updates available';
         }
       });
     } finally {
@@ -100,7 +100,7 @@ class _UpdateTestScreenState extends ConsumerState<UpdateTestScreen> {
       final success = await _updateService.openStore();
 
       setState(() {
-        _statusMessage = success ? 'Store ouvert avec succès' : 'Impossible d\'ouvrir le store';
+        _statusMessage = success ? 'Store opened successfully' : 'Impossible d\'ouvrir le store';
       });
     } finally {
       setState(() {
@@ -116,8 +116,8 @@ class _UpdateTestScreenState extends ConsumerState<UpdateTestScreen> {
         minRequiredVersion: '2.0.0',
         releaseNotes: [
           '• Refonte complète de l\'application',
-          '• Nouvelles fonctionnalités majeures',
-          '• Corrections de sécurité importantes',
+          '• Major new features',
+          '• Important security fixes',
         ],
         updateUrl: '',
         forceUpdate: true,
@@ -165,22 +165,22 @@ class _UpdateTestScreenState extends ConsumerState<UpdateTestScreen> {
               const SizedBox(height: 16),
             ],
             AppButton(
-              text: 'Vérifier les mises à jour',
+              text: 'Check for Updates',
               onPressed: _isLoading ? null : _checkForUpdates,
               isLoading: _isLoading,
             ),
             const SizedBox(height: 16),
             if (_updateInfo != null) ...[
               AppButton(
-                text: 'Afficher le dialogue de mise à jour',
+                text: 'Show Update Dialog',
                 onPressed: _isLoading ? null : _showUpdateDialog,
               ),
               const SizedBox(height: 16),
             ],
-            AppButton(text: 'Ouvrir le store', onPressed: _isLoading ? null : _openStore),
+            AppButton(text: 'Open Store', onPressed: _isLoading ? null : _openStore),
             const SizedBox(height: 16),
             AppButton(
-              text: 'Simuler une mise à jour forcée',
+              text: 'Simulate Forced Update',
               onPressed: _isLoading ? null : _simulateForceUpdate,
               type: AppButtonType.outline,
             ),
@@ -188,16 +188,16 @@ class _UpdateTestScreenState extends ConsumerState<UpdateTestScreen> {
             const Divider(),
             const SizedBox(height: 16),
             const Text(
-              'Instructions de test',
+              'Testing Instructions',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 8),
             const Text(
-              '1. Utilisez le bouton "Vérifier les mises à jour" pour rechercher des mises à jour\n'
-              '2. En mode développement, une mise à jour simulée sera disponible\n'
-              '3. Utilisez "Afficher le dialogue de mise à jour" pour voir le dialogue de mise à jour\n'
-              '4. "Ouvrir le store" tentera d\'ouvrir le store correspondant à votre plateforme\n'
-              '5. "Simuler une mise à jour forcée" affichera un dialogue de mise à jour obligatoire',
+              '1. Use the "Check for Updates" button to search for updates\n'
+              '2. In development mode, a simulated update will be available\n'
+              '3. Use "Show Update Dialog" to see the update dialog\n'
+              '4. "Open Store" tentera d\'ouvrir le store correspondant à votre plateforme\n'
+              '5. "Simulate Forced Update" will display a mandatory update dialog',
             ),
           ],
         ),

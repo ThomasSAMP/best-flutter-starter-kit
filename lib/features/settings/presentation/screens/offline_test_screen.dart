@@ -39,7 +39,7 @@ class _OfflineTestScreenState extends ConsumerState<OfflineTestScreen> {
   Future<void> _createNote() async {
     if (_titleController.text.isEmpty || _contentController.text.isEmpty) {
       setState(() {
-        _errorMessage = 'Le titre et le contenu sont requis';
+        _errorMessage = 'Title and content are required';
       });
       return;
     }
@@ -53,11 +53,11 @@ class _OfflineTestScreenState extends ConsumerState<OfflineTestScreen> {
       final repository = ref.read(noteRepositoryProvider);
       await repository.createNote(_titleController.text, _contentController.text);
 
-      // Réinitialiser les champs
+      // Reset fields
       _titleController.clear();
       _contentController.clear();
 
-      // Recharger les notes
+      // Reload notes
       ref.read(noteProvider.notifier).loadItems();
 
       setState(() {
@@ -65,7 +65,7 @@ class _OfflineTestScreenState extends ConsumerState<OfflineTestScreen> {
       });
     } catch (e) {
       setState(() {
-        _errorMessage = 'Erreur lors de la création de la note: $e';
+        _errorMessage = 'Error while creating note: $e';
       });
     } finally {
       setState(() {
@@ -79,11 +79,11 @@ class _OfflineTestScreenState extends ConsumerState<OfflineTestScreen> {
       final repository = ref.read(noteRepositoryProvider);
       await repository.deleteNote(noteId);
 
-      // Recharger les notes
+      // Reload notes
       ref.read(noteProvider.notifier).loadItems();
     } catch (e) {
       setState(() {
-        _errorMessage = 'Erreur lors de la suppression de la note: $e';
+        _errorMessage = 'Error while deleting note: $e';
       });
     }
   }
@@ -96,7 +96,7 @@ class _OfflineTestScreenState extends ConsumerState<OfflineTestScreen> {
 
     return Scaffold(
       appBar: AppBarWidget(
-        title: 'Off-Line Test',
+        title: 'Offline Test',
         showBackButton: canPop,
         leading:
             !canPop
@@ -108,7 +108,7 @@ class _OfflineTestScreenState extends ConsumerState<OfflineTestScreen> {
       ),
       body: Column(
         children: [
-          // Indicateur de connectivité
+          // Connectivity indicator
           const ConnectivityIndicator(),
 
           Expanded(
@@ -120,34 +120,34 @@ class _OfflineTestScreenState extends ConsumerState<OfflineTestScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Gestionnaire de synchronisation
+                    // Synchronization manager
                     SyncManager<NoteModel>(provider: noteProvider, entityName: 'Notes'),
 
                     const SizedBox(height: 24),
                     const Divider(),
                     const SizedBox(height: 16),
 
-                    // Formulaire de création de note
+                    // Note creation form
                     const Text(
-                      'Créer une note',
+                      'Create a Note',
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     const SizedBox(height: 8),
                     AppTextField(
                       controller: _titleController,
-                      label: 'Titre',
-                      hint: 'Entrez le titre de la note',
+                      label: 'Title',
+                      hint: 'Enter note title',
                     ),
                     const SizedBox(height: 8),
                     AppTextField(
                       controller: _contentController,
-                      label: 'Contenu',
-                      hint: 'Entrez le contenu de la note',
+                      label: 'Content',
+                      hint: 'Enter note content',
                       maxLines: 3,
                     ),
                     const SizedBox(height: 16),
                     AppButton(
-                      text: 'Créer une note',
+                      text: 'Create a Note',
                       onPressed: _isCreating ? null : _createNote,
                       isLoading: _isCreating,
                     ),
@@ -168,7 +168,7 @@ class _OfflineTestScreenState extends ConsumerState<OfflineTestScreen> {
                     const Divider(),
                     const SizedBox(height: 16),
 
-                    // Liste des notes
+                    // Notes list
                     const Text(
                       'Notes',
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -184,7 +184,7 @@ class _OfflineTestScreenState extends ConsumerState<OfflineTestScreen> {
                       )
                     else if (notesState.items.isEmpty)
                       const Center(
-                        child: Padding(padding: EdgeInsets.all(16.0), child: Text('Aucune note')),
+                        child: Padding(padding: EdgeInsets.all(16.0), child: Text('No notes')),
                       )
                     else
                       ListView.separated(
@@ -221,18 +221,18 @@ class _OfflineTestScreenState extends ConsumerState<OfflineTestScreen> {
 
                     // Instructions
                     const Text(
-                      'Instructions de test',
+                      'Testing Instructions',
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     const SizedBox(height: 8),
                     const Text(
-                      '1. Créez des notes en mode connecté et vérifiez qu\'elles sont synchronisées\n'
-                      '2. Activez le mode avion sur votre appareil\n'
-                      '3. Créez des notes en mode hors ligne\n'
-                      '4. Vérifiez que les notes sont marquées comme "Non synchronisé"\n'
-                      '5. Désactivez le mode avion\n'
-                      '6. Appuyez sur "Synchroniser" pour envoyer les notes au serveur\n'
-                      '7. Vérifiez que toutes les notes sont maintenant synchronisées',
+                      '1. Create notes online and check that they are synchronized'
+                      '2. Turn on airplane mode on your device\n'
+                      '3. Create notes in offline mode\n'
+                      '4. Verify that notes are marked as "Not synchronized"\n'
+                      '5. Turn off airplane mode\n'
+                      '6. Tap "Synchronize" to send notes to the server\n'
+                      '7. Verify that all notes are now synchronized',
                     ),
                   ],
                 ),

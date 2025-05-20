@@ -1,4 +1,4 @@
-// IMPORTANT: pour générer les mocks, vous devez éxecuter une commande
+// IMPORTANT: to build mocks, you need to execute this command
 // flutter pub run build_runner build --delete-conflicting-outputs
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,9 +22,9 @@ void main() {
   late MockUserCredential mockUserCredential;
   late MockUser mockUser;
 
-  // Initialiser EnvConfig avant tous les tests
+  // Initialize EnvConfig before all tests
   setUpAll(() {
-    // Initialiser EnvConfig avec l'environnement de test
+    // Initialize EnvConfig with test environnement
     EnvConfig.initialize(Environment.dev);
   });
 

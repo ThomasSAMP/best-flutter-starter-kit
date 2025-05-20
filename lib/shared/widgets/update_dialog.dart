@@ -13,7 +13,7 @@ class UpdateDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(updateInfo.forceUpdate ? 'Mise à jour requise' : 'Mise à jour disponible'),
+      title: Text(updateInfo.forceUpdate ? 'Update Required' : 'Update Available'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -21,8 +21,8 @@ class UpdateDialog extends StatelessWidget {
           children: [
             Text(
               updateInfo.forceUpdate
-                  ? 'Une mise à jour est requise pour continuer à utiliser l\'application.'
-                  : 'Une nouvelle version de l\'application est disponible.',
+                  ? 'An update is required to continue using the application.'
+                  : 'A new version of the application is available.',
             ),
             const SizedBox(height: 16),
             Text(
@@ -31,7 +31,7 @@ class UpdateDialog extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             if (updateInfo.releaseNotes.isNotEmpty) ...[
-              const Text('Nouveautés :', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text('What\'s New:', style: TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               ...updateInfo.releaseNotes.map(
                 (note) => Padding(padding: const EdgeInsets.only(bottom: 4), child: Text(note)),
@@ -41,9 +41,9 @@ class UpdateDialog extends StatelessWidget {
         ),
       ),
       actions: [
-        if (!updateInfo.forceUpdate) TextButton(onPressed: onLater, child: const Text('Plus tard')),
+        if (!updateInfo.forceUpdate) TextButton(onPressed: onLater, child: const Text('Later')),
         AppButton(
-          text: 'Mettre à jour',
+          text: 'Update',
           onPressed: onUpdate,
           fullWidth: false,
           type: AppButtonType.primary,

@@ -17,7 +17,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-        // Ajouter cette ligne pour le desugaring
+        // Add this line for desugaring
         isCoreLibraryDesugaringEnabled = true
     }
 

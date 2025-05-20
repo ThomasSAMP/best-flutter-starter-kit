@@ -14,7 +14,7 @@ class AuthService {
   late final ErrorService _errorService;
 
   AuthService(this._firebaseAuth, this._userRepository) {
-    // Initialiser _errorService via getIt
+    // Initialize _errorService via getIt
     _errorService = getIt<ErrorService>();
   }
 
@@ -31,7 +31,7 @@ class AuthService {
         password: password,
       );
 
-      // Définir les informations de l'utilisateur pour Crashlytics
+      // Set user information for Crashlytics
       final user = userCredential.user;
       if (user != null) {
         await _errorService.setUserInfo(user.uid, email: user.email, name: user.displayName);
@@ -61,7 +61,7 @@ class AuthService {
 
   Future<User?> createUserWithEmailAndPassword(String email, String password) async {
     try {
-      // 1. Créer l'utilisateur dans Firebase Auth
+      // 1. Create user in Firebase Auth
       final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
@@ -70,10 +70,10 @@ class AuthService {
       final user = userCredential.user;
 
       if (user != null) {
-        // 2. Créer l'utilisateur dans Firestore
+        // 2. Create user in Firestore
         await _userRepository.createUser(user);
 
-        // 3. Définir les informations de l'utilisateur pour Crashlytics
+        // 3. Set user information for Crashlytics
         await _errorService.setUserInfo(user.uid, email: user.email, name: user.displayName);
       }
 
@@ -125,7 +125,7 @@ class AuthService {
 
   Future<void> signOut() async {
     try {
-      // Réinitialiser les informations de l'utilisateur pour Crashlytics
+      // Reset user information for Crashlytics
       await _errorService.setUserInfo('anonymous');
 
       await _firebaseAuth.signOut();

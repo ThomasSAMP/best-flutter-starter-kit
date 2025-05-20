@@ -14,7 +14,7 @@ class AppNavigationObserver extends NavigatorObserver {
     routeStack.add(route);
     _logNavigation('PUSH', route, previousRoute);
 
-    // Ajouter un breadcrumb pour Crashlytics
+    // Add a breadcrumb for Crashlytics
     _addNavigationBreadcrumb('PUSH', route, previousRoute);
   }
 
@@ -24,7 +24,7 @@ class AppNavigationObserver extends NavigatorObserver {
     routeStack.remove(route);
     _logNavigation('POP', route, previousRoute);
 
-    // Ajouter un breadcrumb pour Crashlytics
+    // Add a breadcrumb for Crashlytics
     _addNavigationBreadcrumb('POP', route, previousRoute);
   }
 
@@ -34,7 +34,7 @@ class AppNavigationObserver extends NavigatorObserver {
     routeStack.remove(route);
     _logNavigation('REMOVE', route, previousRoute);
 
-    // Ajouter un breadcrumb pour Crashlytics
+    // Add a breadcrumb for Crashlytics
     _addNavigationBreadcrumb('REMOVE', route, previousRoute);
   }
 
@@ -49,12 +49,12 @@ class AppNavigationObserver extends NavigatorObserver {
     }
     _logNavigation('REPLACE', newRoute, oldRoute);
 
-    // Ajouter un breadcrumb pour Crashlytics
+    // Add a breadcrumb for Crashlytics
     _addNavigationBreadcrumb('REPLACE', newRoute, oldRoute);
   }
 
   void _logNavigation(String action, Route<dynamic>? route, Route<dynamic>? previousRoute) {
-    // Extraire le nom de la route de manière plus robuste
+    // Extract route name more robustly
     final routeName = _getRouteName(route);
     final previousRouteName = _getRouteName(previousRoute);
 
@@ -78,17 +78,17 @@ class AppNavigationObserver extends NavigatorObserver {
   String _getRouteName(Route<dynamic>? route) {
     if (route == null) return 'none';
 
-    // Essayer d'obtenir le nom de la route à partir des paramètres
+    // Try to get route name from parameters
     if (route.settings.name != null && route.settings.name!.isNotEmpty) {
       return route.settings.name!;
     }
 
-    // Essayer d'obtenir des informations à partir des arguments
+    // Try to get information from arguments
     if (route.settings.arguments != null) {
       return 'Route(args: ${route.settings.arguments})';
     }
 
-    // Dernier recours: utiliser le type de route
+    // Last resort: use route type
     return route.runtimeType.toString();
   }
 

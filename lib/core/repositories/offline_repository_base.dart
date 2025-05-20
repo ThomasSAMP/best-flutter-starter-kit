@@ -5,24 +5,24 @@ import '../services/connectivity_service.dart';
 import '../services/local_storage_service.dart';
 import '../utils/logger.dart';
 
-/// Classe de base pour les repositories avec prise en charge du mode hors ligne
+/// Base class for repositories with offline mode support
 abstract class OfflineRepositoryBase<T extends SyncableModel> {
   final ConnectivityService connectivityService;
   final LocalStorageService localStorageService;
 
-  // Clé pour le stockage local des données
+  // Key for local data storage
   final String storageKey;
 
-  // Clé pour le stockage local des opérations en attente
+  // Key for local pending operations storage
   final String pendingOperationsKey;
 
-  // File d'attente des opérations en attente
+  // Queue of pending operations
   final List<PendingOperation<T>> pendingOperations = [];
 
-  // Abonnement aux changements de connectivité
+  // Subscription to connectivity changes
   StreamSubscription<ConnectionStatus>? _connectivitySubscription;
 
-  // Fonction pour créer un modèle à partir d'un JSON
+  // Function to create a model from JSON
   final T Function(Map<String, dynamic> json) fromJson;
 
   OfflineRepositoryBase({
@@ -32,16 +32,16 @@ abstract class OfflineRepositoryBase<T extends SyncableModel> {
     required this.pendingOperationsKey,
     required this.fromJson,
   }) {
-    // Écouter les changements de connectivité
+    // Listen to connectivity changes
     _connectivitySubscription = connectivityService.connectionStatus.listen(
       _handleConnectivityChange,
     );
 
-    // Charger les opérations en attente
+    // Load pending operations
     _loadPendingOperations();
   }
 
-  // Méthode appelée lorsque la connectivité change
+  // Method called when connectivity changes
   void _handleConnectivityChange(ConnectionStatus status) {
     if (status == ConnectionStatus.online) {
       AppLogger.info('Connection restored. Processing pending operations...');
@@ -49,13 +49,13 @@ abstract class OfflineRepositoryBase<T extends SyncableModel> {
     }
   }
 
-  // Traiter les opérations en attente lorsque la connexion est rétablie
+  // Process pending operations when connection is restored
   Future<void> processPendingOperations() async {
     if (pendingOperations.isEmpty) return;
 
     AppLogger.info('Processing ${pendingOperations.length} pending operations');
 
-    // Créer une copie de la liste pour éviter les problèmes de modification pendant l'itération
+    // Create a copy of the list to avoid modification issues during iteration
     final operations = List<PendingOperation<T>>.from(pendingOperations);
 
     for (final operation in operations) {
@@ -65,26 +65,26 @@ abstract class OfflineRepositoryBase<T extends SyncableModel> {
         AppLogger.debug('Successfully processed pending operation: ${operation.type}');
       } catch (e) {
         AppLogger.error('Failed to process pending operation: ${operation.type}', e);
-        // Garder l'opération dans la file d'attente pour réessayer plus tard
+        // Keep the operation in the queue to retry later
       }
     }
 
-    // Sauvegarder les opérations en attente mises à jour
+    // Save updated pending operations
     await savePendingOperations();
   }
 
-  // Ajouter une opération à la file d'attente
+  // Add an operation to the queue
   void addPendingOperation(PendingOperation<T> operation) {
     pendingOperations.add(operation);
     AppLogger.debug('Added pending operation: ${operation.type}');
 
-    // Si nous sommes en ligne, traiter immédiatement l'opération
+    // If we are online, process the operation immediately
     if (connectivityService.currentStatus == ConnectionStatus.online) {
       processPendingOperations();
     }
   }
 
-  // Charger les opérations en attente depuis le stockage local
+  // Load pending operations from local storage
   Future<void> _loadPendingOperations() async {
     try {
       final operationsData = localStorageService.loadPendingOperationsData(pendingOperationsKey);
@@ -119,12 +119,12 @@ abstract class OfflineRepositoryBase<T extends SyncableModel> {
     }
   }
 
-  // Sauvegarder les opérations en attente dans le stockage local
+  // Save pending operations to local storage
   Future<void> savePendingOperations() async {
     await localStorageService.savePendingOperations<T>(pendingOperationsKey, pendingOperations);
   }
 
-  // Sauvegarder localement
+  // Save locally
   Future<void> saveLocally(T item) async {
     final items = loadAllLocally();
     final index = items.indexWhere((i) => i.id == item.id);
@@ -138,53 +138,53 @@ abstract class OfflineRepositoryBase<T extends SyncableModel> {
     await localStorageService.saveModelList<T>(storageKey, items);
   }
 
-  // Supprimer localement
+  // Delete locally
   Future<void> deleteLocally(String id) async {
     final items = loadAllLocally();
     final updatedItems = items.where((item) => item.id != id).toList();
     await localStorageService.saveModelList<T>(storageKey, updatedItems);
   }
 
-  // Charger toutes les données locales
+  // Load all local data
   List<T> loadAllLocally() {
     return localStorageService.loadModelList<T>(storageKey, fromJson);
   }
 
-  // Méthodes abstraites à implémenter dans les sous-classes
+  // Abstract methods to implement in subclasses
 
-  /// Sauvegarde un élément sur le serveur distant
+  /// Save an item to the remote server
   Future<void> saveToRemote(T item);
 
-  /// Supprime un élément du serveur distant
+  /// Delete an item from the remote server
   Future<void> deleteFromRemote(String id);
 
-  /// Charge tous les éléments depuis le serveur distant
+  /// Load all items from the remote server
   Future<List<T>> loadAllFromRemote();
 
-  /// Synchronise les données avec le serveur
+  /// Synchronize data with server
   Future<void> syncWithServer() async {
     try {
-      // Traiter les opérations en attente
+      // Process pending operations
       await processPendingOperations();
 
-      // Récupérer les données depuis le serveur
+      // Retrieve data from the server
       final remoteItems = await loadAllFromRemote();
 
-      // Récupérer les données locales
+      // Recover local data
       final localItems = loadAllLocally();
 
-      // Identifier les éléments qui existent localement mais pas sur le serveur
+      // Identify items that exist locally but not on the server
       final localOnlyItems =
           localItems.where((local) => !remoteItems.any((remote) => remote.id == local.id)).toList();
 
-      // Synchroniser les éléments locaux uniquement avec le serveur
+      // Synchronize local-only items with the server
       for (final item in localOnlyItems) {
         if (!item.isSynced) {
           await saveToRemote(item);
         }
       }
 
-      // Mettre à jour le stockage local avec tous les éléments
+      // Update local storage with all items
       final allItems = [...remoteItems, ...localOnlyItems];
       await localStorageService.saveModelList<T>(storageKey, allItems);
 
@@ -195,7 +195,7 @@ abstract class OfflineRepositoryBase<T extends SyncableModel> {
     }
   }
 
-  // Nettoyer les ressources lors de la destruction du repository
+  // Clean up resources when the repository is destroyed
   void dispose() {
     _connectivitySubscription?.cancel();
   }

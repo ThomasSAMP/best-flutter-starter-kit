@@ -12,7 +12,7 @@ class LocalStorageService {
 
   LocalStorageService(this._prefs);
 
-  /// Sauvegarde une liste de modèles dans le stockage local
+  /// Save a list of models to local storage
   Future<bool> saveModelList<T extends SyncableModel>(String key, List<T> items) async {
     try {
       final jsonList = items.map((item) => jsonEncode(item.toJson())).toList();
@@ -26,7 +26,7 @@ class LocalStorageService {
     }
   }
 
-  /// Charge une liste de modèles depuis le stockage local
+  /// Load a list of models from local storage
   List<T> loadModelList<T extends SyncableModel>(
     String key,
     T Function(Map<String, dynamic> json) fromJson,
@@ -44,7 +44,7 @@ class LocalStorageService {
     }
   }
 
-  /// Sauvegarde un modèle individuel dans le stockage local
+  /// Save an individual model to local storage
   Future<bool> saveModel<T extends SyncableModel>(String key, T item) async {
     try {
       final jsonString = jsonEncode(item.toJson());
@@ -58,7 +58,7 @@ class LocalStorageService {
     }
   }
 
-  /// Charge un modèle individuel depuis le stockage local
+  /// Load an individual model from local storage
   T? loadModel<T extends SyncableModel>(
     String key,
     T Function(Map<String, dynamic> json) fromJson,
@@ -77,7 +77,7 @@ class LocalStorageService {
     }
   }
 
-  /// Supprime une entrée du stockage local
+  /// Remove an entry from local storage
   Future<bool> remove(String key) async {
     try {
       final result = await _prefs.remove(key);
@@ -90,12 +90,12 @@ class LocalStorageService {
     }
   }
 
-  /// Vérifie si une clé existe dans le stockage local
+  /// Check if a key exists in local storage
   bool containsKey(String key) {
     return _prefs.containsKey(key);
   }
 
-  /// Sauvegarde des opérations en attente dans le stockage local
+  /// Save pending operations to local storage
   Future<bool> savePendingOperations<T extends SyncableModel>(
     String key,
     List<PendingOperation<T>> operations,
@@ -118,7 +118,7 @@ class LocalStorageService {
     }
   }
 
-  /// Charge des opérations en attente depuis le stockage local
+  /// Load pending operations from local storage
   List<Map<String, dynamic>> loadPendingOperationsData(String key) {
     try {
       final jsonList = _prefs.getStringList(key) ?? [];
@@ -135,10 +135,10 @@ class LocalStorageService {
   }
 }
 
-/// Types d'opérations en attente
+/// Types of pending operations
 enum OperationType { create, update, delete }
 
-/// Classe représentant une opération en attente
+/// Class representing a pending operation
 class PendingOperation<T extends SyncableModel> {
   final OperationType type;
   final T data;

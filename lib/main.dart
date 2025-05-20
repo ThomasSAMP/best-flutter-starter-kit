@@ -43,7 +43,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
     super.initState();
-    // Vérifier les mises à jour après le premier rendu
+    // Check for Updates after the first render
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkForUpdates();
     });
@@ -55,7 +55,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       final updateInfo = await updateService.checkForUpdate();
 
       if (updateInfo != null && mounted) {
-        // Afficher le dialogue de mise à jour
+        // Show Update Dialog
         await showDialog(
           context: context,
           barrierDismissible: !updateInfo.forceUpdate,
@@ -71,8 +71,8 @@ class _MyAppState extends ConsumerState<MyApp> {
         );
       }
     } catch (e) {
-      // Ignorer les erreurs lors de la vérification des mises à jour
-      // pour ne pas bloquer le démarrage de l'application
+      // Ignore errors during update checks
+      // to avoid blocking application startup
     }
   }
 

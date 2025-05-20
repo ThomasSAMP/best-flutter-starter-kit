@@ -14,19 +14,19 @@ import 'error_service.dart';
 class UpdateService {
   final ErrorService _errorService;
 
-  // Informations sur l'application actuelle
+  // Current Information app
   PackageInfo? _packageInfo;
 
-  // URL pour vérifier les mises à jour (à remplacer par votre propre API)
+  // URL to check for updates (replace with your own API)
   final String _updateCheckUrl = 'https://your-api.com/app/updates';
 
-  // URLs des stores
+  // Store URLs
   final String _playStoreUrl = 'https://play.google.com/store/apps/details?id=';
   final String _appStoreUrl = 'https://apps.apple.com/app/id';
 
   UpdateService(this._errorService);
 
-  /// Initialise le service de mise à jour
+  /// Initialize update service
   Future<void> initialize() async {
     try {
       _packageInfo = await PackageInfo.fromPlatform();
@@ -37,21 +37,21 @@ class UpdateService {
     }
   }
 
-  /// Vérifie si une mise à jour est disponible
+  /// Check if an update is available
   ///
-  /// Retourne un [UpdateInfo] si une mise à jour est disponible, null sinon.
+  /// Returns an [UpdateInfo] if an update is available, null otherwise.
   Future<UpdateInfo?> checkForUpdate() async {
     if (_packageInfo == null) {
       await initialize();
     }
 
     try {
-      // En mode développement, simuler une mise à jour disponible
+      // In development mode, simulate an available update
       if (EnvConfig.isDevelopment) {
         return _simulateUpdate();
       }
 
-      // En production, vérifier réellement les mises à jour
+      // In production, actually check for updates
       final response = await http.get(
         Uri.parse(
           '$_updateCheckUrl?version=${_packageInfo!.version}&build=${_packageInfo!.buildNumber}',
@@ -61,7 +61,7 @@ class UpdateService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
-        // Vérifier si une mise à jour est disponible
+        // Check if an update is available
         if (data['update_available'] == true) {
           return UpdateInfo(
             availableVersion: data['version'],
@@ -73,7 +73,7 @@ class UpdateService {
         }
       }
 
-      // Aucune mise à jour disponible
+      // No updates available
       return null;
     } catch (e, stackTrace) {
       AppLogger.error('Failed to check for updates', e, stackTrace);
@@ -82,7 +82,7 @@ class UpdateService {
     }
   }
 
-  /// Simule une mise à jour disponible (pour le développement)
+  /// Simulate an available update (for development)
   UpdateInfo _simulateUpdate() {
     final currentVersion = _packageInfo?.version ?? '1.0.0';
     final parts = currentVersion.split('.');
@@ -95,17 +95,13 @@ class UpdateService {
     return UpdateInfo(
       availableVersion: newVersion,
       minRequiredVersion: currentVersion,
-      releaseNotes: [
-        '• Nouvelle interface utilisateur',
-        '• Performances améliorées',
-        '• Corrections de bugs',
-      ],
+      releaseNotes: ['• New user interface', '• Improved performance', '• Bug Fixes'],
       updateUrl: '',
       forceUpdate: false,
     );
   }
 
-  /// Ouvre le store pour mettre à jour l'application
+  /// Open the store to update the application
   Future<bool> openStore() async {
     try {
       final Uri storeUri;
@@ -113,7 +109,7 @@ class UpdateService {
       if (Platform.isAndroid) {
         storeUri = Uri.parse('$_playStoreUrl${_packageInfo!.packageName}');
       } else if (Platform.isIOS) {
-        // Remplacez YOUR_APP_ID par l'ID de votre application sur l'App Store
+        // Replace YOUR_APP_ID with your App Store application ID
         storeUri = Uri.parse('$_appStoreUrl/YOUR_APP_ID');
       } else {
         AppLogger.warning('Platform not supported for app updates');
@@ -134,31 +130,31 @@ class UpdateService {
     }
   }
 
-  /// Vérifie si la version actuelle est inférieure à la version minimale requise
+  /// Check if current version is less than the minimum required version
   bool isVersionOutdated(String currentVersion, String minRequiredVersion) {
     try {
       final current = _parseVersion(currentVersion);
       final required = _parseVersion(minRequiredVersion);
 
-      // Comparer les versions
+      // Compare versions
       if (current[0] < required[0]) {
-        return true; // Major version inférieure
+        return true; // Major version is lower
       } else if (current[0] == required[0] && current[1] < required[1]) {
-        return true; // Minor version inférieure
+        return true; // Minor version is lower
       } else if (current[0] == required[0] &&
           current[1] == required[1] &&
           current[2] < required[2]) {
-        return true; // Patch version inférieure
+        return true; // Patch version is lower
       }
 
-      return false; // Version actuelle est égale ou supérieure à la version minimale requise
+      return false; // Current version is equal to or higher than the minimum required version
     } catch (e) {
       AppLogger.error('Failed to compare versions', e);
-      return false; // En cas d'erreur, supposer que la version n'est pas obsolète
+      return false; // In case of error, assume the version is not outdated
     }
   }
 
-  /// Parse une version au format "x.y.z" en liste [major, minor, patch]
+  /// Parse a version in "x.y.z" format into a list [major, minor, patch]
   List<int> _parseVersion(String version) {
     final parts = version.split('.');
     if (parts.length != 3) {
@@ -168,14 +164,14 @@ class UpdateService {
     return [int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2])];
   }
 
-  /// Obtient la version actuelle de l'application
+  /// Get the current version of the application
   String get currentVersion => _packageInfo?.version ?? 'Unknown';
 
-  /// Obtient le numéro de build actuel de l'application
+  /// Get the current build number of the application
   String get currentBuild => _packageInfo?.buildNumber ?? 'Unknown';
 }
 
-/// Classe pour stocker les informations de mise à jour
+/// Class to store update information
 class UpdateInfo {
   final String availableVersion;
   final String minRequiredVersion;

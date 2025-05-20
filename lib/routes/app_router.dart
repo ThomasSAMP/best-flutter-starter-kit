@@ -71,17 +71,17 @@ final routerProvider = Provider<GoRouter>((ref) {
     debugLogDiagnostics: true,
     observers: [observer, analyticsObserver],
     redirect: (context, state) {
-      // Vérifier si l'utilisateur tente d'accéder à une route protégée
+      // Check if the user is trying to access a protected route
       final isGoingToProtectedRoute =
           state.matchedLocation.startsWith('/profile') ||
           state.matchedLocation.startsWith('/settings');
 
-      // Si non authentifié et tentative d'accès à une route protégée
+      // If not authenticated and attempting to access a protected route
       if (!isAuthenticated && isGoingToProtectedRoute) {
         return '/login?redirect=${state.matchedLocation}';
       }
 
-      // Si authentifié et tentative d'accès à une route d'auth
+      // If authenticated and attempting to access an auth route
       if (isAuthenticated &&
           (state.matchedLocation.startsWith('/login') ||
               state.matchedLocation.startsWith('/register'))) {
@@ -208,7 +208,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
   );
 
-  // Enregistrer le router dans GetIt
+  // Register the router in GetIt
   if (!getIt.isRegistered<GoRouter>()) {
     getIt.registerSingleton<GoRouter>(router);
   }

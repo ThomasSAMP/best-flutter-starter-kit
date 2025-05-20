@@ -39,10 +39,10 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   }
 
   Widget? _buildLeading(BuildContext context) {
-    // Si un widget leading personnalisé est fourni, l'utiliser
+    // If a custom leading widget is provided, use it
     if (leading != null) return leading;
 
-    // Sinon, afficher le bouton de retour si demandé et si on peut revenir en arrière
+    // Otherwise, show the back button if requested and if it is possible to go back
     if (showBackButton && context.canPop()) {
       return IconButton(
         icon: const Icon(Icons.arrow_back),
@@ -50,7 +50,7 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       );
     }
 
-    // Sinon, ne pas afficher de bouton
+    // Otherwise, do not display a button
     return null;
   }
 

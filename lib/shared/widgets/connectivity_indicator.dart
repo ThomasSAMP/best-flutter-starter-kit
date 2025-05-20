@@ -30,7 +30,7 @@ class _ConnectivityIndicatorState extends State<ConnectivityIndicator>
 
     _connectivityService.connectionStatus.listen(_handleConnectivityChange);
 
-    // Vérifier l'état initial
+    // Check the initial state
     _updateVisibility(_connectivityService.currentStatus == ConnectionStatus.offline);
   }
 
@@ -77,7 +77,7 @@ class _ConnectivityIndicatorState extends State<ConnectivityIndicator>
                   Icon(Icons.wifi_off, color: Colors.white, size: 16),
                   SizedBox(width: 8),
                   Text(
-                    'Vous êtes hors ligne',
+                    'You are offline',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 12,

@@ -45,7 +45,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _errorMessage = null;
     });
 
-    // Récupérez le paramètre de redirection AVANT l'appel asynchrone
+    // Get the redirect parameter BEFORE the asynchronous call
     final redirectLocation = _getRedirectLocation(context);
 
     try {
@@ -73,28 +73,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
-  // Méthode auxiliaire pour obtenir le paramètre de redirection en toute sécurité
+  // Helper method to safely get the redirect parameter
   String? _getRedirectLocation(BuildContext context) {
     try {
       return GoRouterState.of(context).uri.queryParameters['redirect'];
     } catch (e) {
-      // Si GoRouterState.of(context) échoue, retourner null
+      // If GoRouterState.of(context) fails, return null
       return null;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Vérifier si on peut revenir en arrière
+    // Check if we can go back
     final canPop = context.canPop();
 
     return Scaffold(
       appBar: AppBarWidget(
         title: 'Login',
-        // Afficher le bouton de retour si on peut revenir en arrière
+        // Show back button if we can go back
         showBackButton: canPop,
-        // Si on ne peut pas revenir en arrière (c'est-à-dire que l'utilisateur est arrivé directement sur cette page),
-        // ajouter un bouton pour aller à la page d'accueil
+        // If we can't go back (i.e., the user arrived directly on this page),
+        // add a button to go to the home page
         leading:
             !canPop
                 ? IconButton(

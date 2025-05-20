@@ -10,24 +10,24 @@ import '../utils/logger.dart';
 
 @lazySingleton
 class ImageCacheService {
-  // Instance personnalisée de CacheManager
+  // Custom instance of CacheManager
   static const String _cacheKey = 'customImageCache';
 
-  // Taille maximale du cache en octets (100MB par défaut)
+  // Maximum cache size in bytes (100MB by default)
   static const int _defaultMaxCacheSize = 100 * 1024 * 1024;
 
-  // Durée de vie du cache (7 jours par défaut)
+  // Cache lifetime (7 days by default)
   static const Duration _defaultCacheDuration = Duration(days: 7);
 
-  // Gestionnaire de cache
+  // Cache manager
   late final CacheManager _cacheManager;
 
-  // Constructeur
+  // Constructor
   ImageCacheService() {
     _initCacheManager();
   }
 
-  // Initialiser le gestionnaire de cache
+  // Initialize cache manager
   void _initCacheManager() {
     _cacheManager = CacheManager(
       Config(
@@ -42,42 +42,42 @@ class ImageCacheService {
     AppLogger.debug('ImageCacheService initialized');
   }
 
-  // Obtenir le gestionnaire de cache
+  // Get cache manager
   CacheManager get cacheManager => _cacheManager;
 
-  // Précharger une image depuis une URL
+  // Preload an image from a URL
   Future<void> preloadImage(String url) async {
     try {
       await _cacheManager.getSingleFile(url);
-      AppLogger.debug('Image préchargée: $url');
+      AppLogger.debug('Image preloaded: $url');
     } catch (e, stackTrace) {
-      AppLogger.error('Erreur lors du préchargement de l\'image', e, stackTrace);
+      AppLogger.error('Error while preloading images', e, stackTrace);
     }
   }
 
-  // Précharger plusieurs images depuis des URLs
+  // Preload multiple images from URLs
   Future<void> preloadImages(List<String> urls) async {
     try {
       final futures = urls.map(preloadImage);
       await Future.wait(futures);
-      AppLogger.debug('${urls.length} images préchargées');
+      AppLogger.debug('${urls.length} images preloaded');
     } catch (e, stackTrace) {
-      AppLogger.error('Erreur lors du préchargement des images', e, stackTrace);
+      AppLogger.error('Error while preloading images', e, stackTrace);
     }
   }
 
-  // Obtenir une image depuis le cache (ou la télécharger si elle n'est pas en cache)
+  // Get an image from cache (or download it if not cached)
   Future<File?> getImage(String url) async {
     try {
       final file = await _cacheManager.getSingleFile(url);
       return file;
     } catch (e, stackTrace) {
-      AppLogger.error('Erreur lors de la récupération de l\'image', e, stackTrace);
+      AppLogger.error('Error while retrieving image', e, stackTrace);
       return null;
     }
   }
 
-  // Obtenir les données binaires d'une image
+  // Get binary data of an image
   Future<Uint8List?> getImageData(String url) async {
     try {
       final file = await getImage(url);
@@ -86,47 +86,47 @@ class ImageCacheService {
       }
       return null;
     } catch (e, stackTrace) {
-      AppLogger.error('Erreur lors de la récupération des données de l\'image', e, stackTrace);
+      AppLogger.error('Error while retrieving image data', e, stackTrace);
       return null;
     }
   }
 
-  // Vérifier si une image est en cache
+  // Check if an image is cached
   Future<bool> isImageCached(String url) async {
     try {
       final fileInfo = await _cacheManager.getFileFromCache(url);
       return fileInfo != null;
     } catch (e) {
-      AppLogger.error('Erreur lors de la vérification du cache', e);
+      AppLogger.error('Error while checking cache', e);
       return false;
     }
   }
 
-  // Supprimer une image spécifique du cache
+  // Remove a specific image from cache
   Future<void> removeImage(String url) async {
     try {
       await _cacheManager.removeFile(url);
-      AppLogger.debug('Image supprimée du cache: $url');
+      AppLogger.debug('Image removed from cache: $url');
     } catch (e, stackTrace) {
-      AppLogger.error('Erreur lors de la suppression de l\'image du cache', e, stackTrace);
+      AppLogger.error('Error while deleting image from cache', e, stackTrace);
     }
   }
 
-  // Vider tout le cache d'images
+  // Clear all image cache
   Future<void> clearCache() async {
     try {
       await _cacheManager.emptyCache();
-      // Vider également le cache interne de CachedNetworkImage
+      // Also clear CachedNetworkImage's internal cache
       await DefaultCacheManager().emptyCache();
       imageCache.clear();
       imageCache.clearLiveImages();
-      AppLogger.debug('Cache d\'images vidé. Taille actuelle du cache: ${imageCache.currentSize}');
+      AppLogger.debug('Image cache cleared. Current cache size: ${imageCache.currentSize}');
     } catch (e, stackTrace) {
-      AppLogger.error('Erreur lors du vidage du cache d\'images', e, stackTrace);
+      AppLogger.error('Error while clearing image cache', e, stackTrace);
     }
   }
 
-  // Obtenir la taille actuelle du cache
+  // Get current cache size
   Future<int> getCacheSize() async {
     try {
       final cacheDir = await getTemporaryDirectory();
@@ -140,12 +140,12 @@ class ImageCacheService {
 
       return totalSize;
     } catch (e, stackTrace) {
-      AppLogger.error('Erreur lors du calcul de la taille du cache', e, stackTrace);
+      AppLogger.error('Error while calculating cache size', e, stackTrace);
       return 0;
     }
   }
 
-  // Lister tous les fichiers récursivement dans un répertoire
+  // List all files recursively in a directory
   Future<List<File>> _listFilesRecursively(Directory dir) async {
     final files = <File>[];
     final entities = await dir.list().toList();
@@ -161,7 +161,7 @@ class ImageCacheService {
     return files;
   }
 
-  // Formater la taille du cache en unité lisible (KB, MB, GB)
+  // Format cache size in readable unit (KB, MB, GB)
   String formatCacheSize(int bytes) {
     if (bytes < 1024) {
       return '$bytes B';

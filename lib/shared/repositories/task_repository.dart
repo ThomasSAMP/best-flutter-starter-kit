@@ -13,7 +13,7 @@ class TaskRepository extends OfflineRepositoryBase<TaskModel> {
   final FirebaseFirestore _firestore;
   final Uuid _uuid = const Uuid();
 
-  // Collection Firestore pour les tâches
+  // Firestore collection for tasks
   CollectionReference<Map<String, dynamic>> get _tasksCollection => _firestore.collection('tasks');
 
   TaskRepository(
@@ -28,7 +28,7 @@ class TaskRepository extends OfflineRepositoryBase<TaskModel> {
         fromJson: TaskModel.fromJson,
       );
 
-  // Créer une nouvelle tâche
+  // Create a new task
   Future<TaskModel> createTask(
     String title,
     String description, {
@@ -47,14 +47,14 @@ class TaskRepository extends OfflineRepositoryBase<TaskModel> {
       userId: userId,
     );
 
-    // Sauvegarder localement
+    // Save locally
     await saveLocally(task);
 
-    // Si nous sommes en ligne, synchroniser avec le serveur
+    // If we are online, synchronize with the server
     if (connectivityService.currentStatus == ConnectionStatus.online) {
       await saveToRemote(task);
     } else {
-      // Sinon, ajouter à la file d'attente des opérations en attente
+      // Otherwise, add to the pending operations queue
       addPendingOperation(
         PendingOperation<TaskModel>(
           type: OperationType.create,
@@ -63,25 +63,25 @@ class TaskRepository extends OfflineRepositoryBase<TaskModel> {
         ),
       );
 
-      // Sauvegarder les opérations en attente
+      // Save pending operations
       await savePendingOperations();
     }
 
     return task;
   }
 
-  // Mettre à jour une tâche existante
+  // Update an existing task
   Future<TaskModel> updateTask(TaskModel task) async {
     final updatedTask = task.copyWith(updatedAt: DateTime.now(), isSynced: false);
 
-    // Sauvegarder localement
+    // Save locally
     await saveLocally(updatedTask);
 
-    // Si nous sommes en ligne, synchroniser avec le serveur
+    // If we are online, synchronize with the server
     if (connectivityService.currentStatus == ConnectionStatus.online) {
       await saveToRemote(updatedTask);
     } else {
-      // Sinon, ajouter à la file d'attente des opérations en attente
+      // Otherwise, add to the pending operations queue
       addPendingOperation(
         PendingOperation<TaskModel>(
           type: OperationType.update,
@@ -90,14 +90,14 @@ class TaskRepository extends OfflineRepositoryBase<TaskModel> {
         ),
       );
 
-      // Sauvegarder les opérations en attente
+      // Save pending operations
       await savePendingOperations();
     }
 
     return updatedTask;
   }
 
-  // Marquer une tâche comme terminée
+  // Mark a task as completed
   Future<TaskModel> completeTask(String taskId, bool isCompleted) async {
     final tasks = loadAllLocally();
     final task = tasks.firstWhere((t) => t.id == taskId);
@@ -105,16 +105,16 @@ class TaskRepository extends OfflineRepositoryBase<TaskModel> {
     return updateTask(task.copyWith(isCompleted: isCompleted));
   }
 
-  // Supprimer une tâche
+  // Delete a task
   Future<void> deleteTask(String taskId) async {
-    // Supprimer localement
+    // Delete locally
     await deleteLocally(taskId);
 
-    // Si nous sommes en ligne, supprimer du serveur
+    // If we are online, delete from server
     if (connectivityService.currentStatus == ConnectionStatus.online) {
       await deleteFromRemote(taskId);
     } else {
-      // Sinon, ajouter à la file d'attente des opérations en attente
+      // Otherwise, add to the pending operations queue
       final tasks = loadAllLocally();
       final taskToDelete = tasks.firstWhere(
         (task) => task.id == taskId,
@@ -136,36 +136,36 @@ class TaskRepository extends OfflineRepositoryBase<TaskModel> {
         ),
       );
 
-      // Sauvegarder les opérations en attente
+      // Save pending operations
       await savePendingOperations();
     }
   }
 
-  // Obtenir toutes les tâches
+  // Get all tasks
   Future<List<TaskModel>> getTasks() async {
     try {
-      // Si nous sommes en ligne, essayer de récupérer depuis Firestore
+      // If we are online, try to retrieve from Firestore
       if (connectivityService.currentStatus == ConnectionStatus.online) {
         final tasks = await loadAllFromRemote();
 
-        // Mettre à jour le stockage local avec les données du serveur
+        // Update local storage with server data
         for (final task in tasks) {
           await saveLocally(task.copyWith(isSynced: true));
         }
 
         return tasks;
       } else {
-        // Sinon, charger depuis le stockage local
+        // Otherwise, load from local storage
         return loadAllLocally();
       }
     } catch (e) {
       AppLogger.error('Error getting tasks', e);
-      // En cas d'erreur, charger depuis le stockage local
+      // In case of error, load from local storage
       return loadAllLocally();
     }
   }
 
-  // Obtenir les tâches filtrées par état de complétion
+  // Get tasks filtered by completion status
   Future<List<TaskModel>> getTasksByCompletion(bool isCompleted) async {
     final tasks = await getTasks();
     return tasks.where((task) => task.isCompleted == isCompleted).toList();
@@ -177,7 +177,7 @@ class TaskRepository extends OfflineRepositoryBase<TaskModel> {
       final updatedTask = task.copyWith(isSynced: true);
       await _tasksCollection.doc(task.id).set(updatedTask.toJson());
 
-      // Mettre à jour le stockage local avec la tâche synchronisée
+      // Update local storage with synchronized task
       await saveLocally(updatedTask);
 
       AppLogger.debug('Task saved to Firestore: ${task.id}');

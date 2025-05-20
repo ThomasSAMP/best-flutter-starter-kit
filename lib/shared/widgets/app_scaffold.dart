@@ -24,27 +24,27 @@ class AppScaffold extends StatelessWidget {
 
     return WillPopScope(
       onWillPop: () async {
-        // Vérifier si on peut naviguer en arrière dans le navigateur actuel
+        // Check if we can navigate back in the current navigator
         final canPop = Navigator.of(context).canPop();
         if (canPop) {
-          return true; // Laisser le framework gérer le pop
+          return true; // Let the framework handle the pop
         }
 
-        // Si on est sur une page autre que la page d'accueil, naviguer vers la page d'accueil
+        // If we are on a page other than the home page, navigate to the home page
         if (currentPath != '/home') {
           context.go('/home');
-          return false; // Empêcher le comportement par défaut
+          return false; // Prevent default behavior
         }
 
-        // Sinon, demander à l'utilisateur s'il veut quitter l'application
+        // Otherwise, ask the user if they want to exit the application
         return await _showExitDialog(context) ?? false;
       },
       child: Scaffold(
         body: Column(
           children: [
-            // Ajouter l'indicateur de connectivité en haut
+            // Add connectivity indicator at the top
             const ConnectivityIndicator(),
-            // Contenu principal
+            // Main content
             Expanded(child: child),
           ],
         ),
@@ -73,14 +73,14 @@ class AppScaffold extends StatelessWidget {
   void _onItemTapped(BuildContext context, int index, HapticService hapticService) {
     final destination = tabs[index].initialLocation;
     if (destination != currentPath) {
-      // Déclencher un retour haptique lors du changement d'onglet
+      // Trigger haptic feedback when changing tabs
       hapticService.feedback(HapticFeedbackType.tabSelection);
       context.go(destination);
     }
   }
 
   Future<bool?> _showExitDialog(BuildContext context) {
-    // Déclencher un retour haptique pour la boîte de dialogue
+    // Trigger haptic feedback for the dialog
     getIt<HapticService>().feedback(HapticFeedbackType.medium);
 
     return showDialog<bool>(
@@ -96,7 +96,7 @@ class AppScaffold extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () {
-                  // Déclencher un retour haptique pour confirmer la sortie
+                  // Trigger haptic feedback to confirm exit
                   getIt<HapticService>().feedback(HapticFeedbackType.heavy);
                   Navigator.of(context).pop(true);
                 },

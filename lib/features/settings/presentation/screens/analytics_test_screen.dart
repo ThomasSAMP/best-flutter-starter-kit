@@ -44,7 +44,7 @@ class _AnalyticsTestScreenState extends ConsumerState<AnalyticsTestScreen> {
     });
 
     try {
-      final params = <String, Object>{}; // Changé de dynamic à Object
+      final params = <String, Object>{};
       if (_paramNameController.text.isNotEmpty && _paramValueController.text.isNotEmpty) {
         params[_paramNameController.text] = _paramValueController.text;
       }

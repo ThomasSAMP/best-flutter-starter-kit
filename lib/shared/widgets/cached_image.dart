@@ -45,12 +45,12 @@ class CachedImage extends StatelessWidget {
       fit: fit,
       cacheManager: cacheManager,
       fadeInDuration: fadeInDuration,
-      memCacheWidth: enableMemoryCache ? null : 1, // Désactiver le cache mémoire si nécessaire
+      memCacheWidth: enableMemoryCache ? null : 1, // Disable memory cache if necessary
       placeholder: (context, url) => placeholder ?? _buildDefaultPlaceholder(),
       errorWidget: (context, url, error) => errorWidget ?? _buildDefaultErrorWidget(),
     );
 
-    // Appliquer la forme appropriée
+    // Apply proper form
     switch (shape) {
       case CachedImageShape.circle:
         return ClipOval(

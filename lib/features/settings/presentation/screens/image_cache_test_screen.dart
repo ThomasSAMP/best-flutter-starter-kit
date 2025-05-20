@@ -25,7 +25,7 @@ class _ImageCacheTestScreenState extends ConsumerState<ImageCacheTestScreen> {
   int _cacheSize = 0;
   String _formattedCacheSize = '0 B';
 
-  // Liste d'images de test
+  // List of test images
   final List<String> _testImages = [
     'https://images.unsplash.com/photo-1682687220063-4742bd7fd538',
     'https://images.unsplash.com/photo-1682695796954-bad0d0f59ff1',
@@ -60,18 +60,18 @@ class _ImageCacheTestScreenState extends ConsumerState<ImageCacheTestScreen> {
   Future<void> _preloadImages() async {
     setState(() {
       _isLoading = true;
-      _statusMessage = 'Préchargement des images...';
+      _statusMessage = 'Preloading images...';
     });
 
     try {
       await _imageCacheService.preloadImages(_testImages);
       await _loadCacheInfo();
       setState(() {
-        _statusMessage = 'Images préchargées avec succès';
+        _statusMessage = 'Images preloaded successfully';
       });
     } catch (e) {
       setState(() {
-        _statusMessage = 'Erreur lors du préchargement: $e';
+        _statusMessage = 'Error while preloading: $e';
       });
     } finally {
       setState(() {
@@ -83,18 +83,18 @@ class _ImageCacheTestScreenState extends ConsumerState<ImageCacheTestScreen> {
   Future<void> _clearCache() async {
     setState(() {
       _isLoading = true;
-      _statusMessage = 'Vidage du cache...';
+      _statusMessage = 'Clearing cache...';
     });
 
     try {
       await _imageCacheService.clearCache();
       await _loadCacheInfo();
       setState(() {
-        _statusMessage = 'Cache vidé avec succès';
+        _statusMessage = 'Cache cleared successfully';
       });
     } catch (e) {
       setState(() {
-        _statusMessage = 'Erreur lors du vidage du cache: $e';
+        _statusMessage = 'Error while clearing cache: $e';
       });
     } finally {
       setState(() {
@@ -129,13 +129,13 @@ class _ImageCacheTestScreenState extends ConsumerState<ImageCacheTestScreen> {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 8),
-            Text('Taille actuelle du cache: $_formattedCacheSize'),
+            Text('Current cache size: $_formattedCacheSize'),
             const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
                   child: AppButton(
-                    text: 'Précharger Images',
+                    text: 'Preload Images',
                     onPressed: _isLoading ? null : _preloadImages,
                     isLoading: _isLoading,
                   ),
@@ -143,7 +143,7 @@ class _ImageCacheTestScreenState extends ConsumerState<ImageCacheTestScreen> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: AppButton(
-                    text: 'Vider Cache',
+                    text: 'Clear Cache',
                     onPressed: _isLoading ? null : _clearCache,
                     isLoading: _isLoading,
                     type: AppButtonType.outline,
@@ -157,7 +157,7 @@ class _ImageCacheTestScreenState extends ConsumerState<ImageCacheTestScreen> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color:
-                      _statusMessage!.contains('Erreur')
+                      _statusMessage!.contains('Error')
                           ? Theme.of(context).colorScheme.errorContainer
                           : Theme.of(context).colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(8),
@@ -168,10 +168,7 @@ class _ImageCacheTestScreenState extends ConsumerState<ImageCacheTestScreen> {
             const SizedBox(height: 24),
             const Divider(),
             const SizedBox(height: 16),
-            const Text(
-              'Images de Test',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
+            const Text('Test Images', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             const SizedBox(height: 8),
             GridView.builder(
               shrinkWrap: true,
@@ -224,7 +221,7 @@ class _ImageCacheTestScreenState extends ConsumerState<ImageCacheTestScreen> {
                       borderRadius: 16,
                     ),
                     const SizedBox(height: 8),
-                    const Text('Arrondi'),
+                    const Text('Rounded'),
                   ],
                 ),
                 Column(
@@ -236,7 +233,7 @@ class _ImageCacheTestScreenState extends ConsumerState<ImageCacheTestScreen> {
                       shape: CachedImageShape.circle,
                     ),
                     const SizedBox(height: 8),
-                    const Text('Cercle'),
+                    const Text('Circle'),
                   ],
                 ),
               ],
@@ -247,10 +244,10 @@ class _ImageCacheTestScreenState extends ConsumerState<ImageCacheTestScreen> {
             const Text('Instructions', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             const SizedBox(height: 8),
             const Text(
-              '1. Utilisez "Précharger Images" pour télécharger les images en cache\n'
-              '2. Vérifiez la taille du cache après le préchargement\n'
-              '3. Utilisez "Vider Cache" pour effacer toutes les images en cache\n'
-              '4. Observez comment les images se chargent avant et après le vidage du cache',
+              '1. Use "Preload Images" to download images to cache\n'
+              '2. Check the cache size after preloading\n'
+              '3. Use "Clear Cache" to clear all cached images\n'
+              '4. Observe how images load before and after clearing the cache',
             ),
           ],
         ),

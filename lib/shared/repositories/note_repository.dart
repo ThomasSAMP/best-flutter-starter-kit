@@ -13,7 +13,7 @@ class NoteRepository extends OfflineRepositoryBase<NoteModel> {
   final FirebaseFirestore _firestore;
   final Uuid _uuid = const Uuid();
 
-  // Collection Firestore pour les notes
+  // Firestore collection for notes
   CollectionReference<Map<String, dynamic>> get _notesCollection => _firestore.collection('notes');
 
   NoteRepository(
@@ -28,7 +28,7 @@ class NoteRepository extends OfflineRepositoryBase<NoteModel> {
         fromJson: NoteModel.fromJson,
       );
 
-  // Créer une nouvelle note
+  // Create a new note
   Future<NoteModel> createNote(String title, String content, {String? userId}) async {
     final note = NoteModel(
       id: _uuid.v4(),
@@ -40,14 +40,14 @@ class NoteRepository extends OfflineRepositoryBase<NoteModel> {
       userId: userId,
     );
 
-    // Sauvegarder localement
+    // Save locally
     await saveLocally(note);
 
-    // Si nous sommes en ligne, synchroniser avec le serveur
+    // If we are online, synchronize with the server
     if (connectivityService.currentStatus == ConnectionStatus.online) {
       await saveToRemote(note);
     } else {
-      // Sinon, ajouter à la file d'attente des opérations en attente
+      // Otherwise, add to the pending operations queue
       addPendingOperation(
         PendingOperation<NoteModel>(
           type: OperationType.create,
@@ -56,25 +56,25 @@ class NoteRepository extends OfflineRepositoryBase<NoteModel> {
         ),
       );
 
-      // Sauvegarder les opérations en attente
+      // Save pending operations
       await savePendingOperations();
     }
 
     return note;
   }
 
-  // Mettre à jour une note existante
+  // Update an existing note
   Future<NoteModel> updateNote(NoteModel note) async {
     final updatedNote = note.copyWith(updatedAt: DateTime.now(), isSynced: false);
 
-    // Sauvegarder localement
+    // Save locally
     await saveLocally(updatedNote);
 
-    // Si nous sommes en ligne, synchroniser avec le serveur
+    // If we are online, synchronize with the server
     if (connectivityService.currentStatus == ConnectionStatus.online) {
       await saveToRemote(updatedNote);
     } else {
-      // Sinon, ajouter à la file d'attente des opérations en attente
+      // Otherwise, add to the pending operations queue
       addPendingOperation(
         PendingOperation<NoteModel>(
           type: OperationType.update,
@@ -83,23 +83,23 @@ class NoteRepository extends OfflineRepositoryBase<NoteModel> {
         ),
       );
 
-      // Sauvegarder les opérations en attente
+      // Save pending operations
       await savePendingOperations();
     }
 
     return updatedNote;
   }
 
-  // Supprimer une note
+  // Delete a note
   Future<void> deleteNote(String noteId) async {
-    // Supprimer localement
+    // Delete locally
     await deleteLocally(noteId);
 
-    // Si nous sommes en ligne, supprimer du serveur
+    // If we are online, delete from server
     if (connectivityService.currentStatus == ConnectionStatus.online) {
       await deleteFromRemote(noteId);
     } else {
-      // Sinon, ajouter à la file d'attente des opérations en attente
+      // Otherwise, add to the pending operations queue
       final notes = loadAllLocally();
       final noteToDelete = notes.firstWhere(
         (note) => note.id == noteId,
@@ -121,31 +121,31 @@ class NoteRepository extends OfflineRepositoryBase<NoteModel> {
         ),
       );
 
-      // Sauvegarder les opérations en attente
+      // Save pending operations
       await savePendingOperations();
     }
   }
 
-  // Obtenir toutes les notes
+  // Get all notes
   Future<List<NoteModel>> getNotes() async {
     try {
-      // Si nous sommes en ligne, essayer de récupérer depuis Firestore
+      // If we are online, try to retrieve from Firestore
       if (connectivityService.currentStatus == ConnectionStatus.online) {
         final notes = await loadAllFromRemote();
 
-        // Mettre à jour le stockage local avec les données du serveur
+        // Update local storage with server data
         for (final note in notes) {
           await saveLocally(note.copyWith(isSynced: true));
         }
 
         return notes;
       } else {
-        // Sinon, charger depuis le stockage local
+        // Otherwise, load from local storage
         return loadAllLocally();
       }
     } catch (e) {
       AppLogger.error('Error getting notes', e);
-      // En cas d'erreur, charger depuis le stockage local
+      // In case of error, load from local storage
       return loadAllLocally();
     }
   }
@@ -156,7 +156,7 @@ class NoteRepository extends OfflineRepositoryBase<NoteModel> {
       final updatedNote = note.copyWith(isSynced: true);
       await _notesCollection.doc(note.id).set(updatedNote.toJson());
 
-      // Mettre à jour le stockage local avec la note synchronisée
+      // Update local storage with synchronized note
       await saveLocally(updatedNote);
 
       AppLogger.debug('Note saved to Firestore: ${note.id}');

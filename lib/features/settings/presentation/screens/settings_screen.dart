@@ -120,14 +120,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                       ListTile(
                         title: const Text('Test Cache d\'Images'),
-                        subtitle: const Text('Gérer le cache d\'images'),
+                        subtitle: const Text('Manage image cache'),
                         leading: const Icon(Icons.image_outlined),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () => _navigationService.navigateTo(context, '/image-cache-test'),
                       ),
                       ListTile(
-                        title: const Text('Test Haptique'),
-                        subtitle: const Text('Tester les retours haptiques'),
+                        title: const Text('Haptic Test'),
+                        subtitle: const Text('Test haptic feedback'),
                         leading: const Icon(Icons.vibration),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () => _navigationService.navigateTo(context, '/haptic-test'),

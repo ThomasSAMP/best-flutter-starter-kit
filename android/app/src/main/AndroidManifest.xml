@@ -26,7 +26,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
             
-            <!-- Déplacez l'intent-filter pour les notifications ici, à l'intérieur de l'activité -->
             <intent-filter>
                 <action android:name="FLUTTER_NOTIFICATION_CLICK" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -39,17 +38,17 @@
             android:name="flutterEmbedding"
             android:value="2" />
             
-        <!-- Ajouter ces lignes pour les notifications -->
+        <!-- For notifications -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="high_importance_channel" />
 
-        <!-- Ajouter ceci pour l'icône de notification -->
+        <!-- For notifications icon -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/notification_icon" />
 
-        <!-- Ajouter ceci pour la couleur de notification -->
+        <!-- For notifications color -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/ic_launcher_background" />

@@ -40,7 +40,7 @@ class AppButton extends StatelessWidget {
     final theme = Theme.of(context);
     final hapticService = getIt<HapticService>();
 
-    // Fonction pour gérer l'appui sur le bouton avec retour haptique
+    // Function to manage button pressing with haptic feedback
     void handlePress() {
       if (onPressed != null) {
         if (useHapticFeedback) {

@@ -16,13 +16,13 @@ final taskProvider = createOfflineDataProvider<TaskModel>(
   fetchItems: () => getIt<TaskRepository>().getTasks(),
 );
 
-// Provider pour les tâches incomplètes
+// Provider for incomplete tasks
 final incompletedTasksProvider = Provider<List<TaskModel>>((ref) {
   final state = ref.watch(taskProvider);
   return state.items.where((task) => !task.isCompleted).toList();
 });
 
-// Provider pour les tâches terminées
+// Provider for completed tasks
 final completedTasksProvider = Provider<List<TaskModel>>((ref) {
   final state = ref.watch(taskProvider);
   return state.items.where((task) => task.isCompleted).toList();

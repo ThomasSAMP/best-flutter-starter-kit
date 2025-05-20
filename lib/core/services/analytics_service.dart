@@ -9,19 +9,19 @@ class AnalyticsService {
   final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
   FirebaseAnalyticsObserver? _observer;
 
-  // Getter pour l'observer (utilisé dans la configuration du routeur)
+  // Getter for the observer (used in router configuration)
   FirebaseAnalyticsObserver get observer {
     _observer ??= FirebaseAnalyticsObserver(analytics: _analytics);
     return _observer!;
   }
 
-  // Initialiser le service d'analytics
+  // Initialize analytics service
   Future<void> initialize() async {
     try {
-      // Activer la collecte d'analytics (désactivée en mode debug par défaut)
+      // Enable analytics collection (disabled in debug mode by default)
       await _analytics.setAnalyticsCollectionEnabled(!kDebugMode);
 
-      // Définir l'ID utilisateur si disponible
+      // Set user ID if available
       // await _analytics.setUserId(id: 'user123');
 
       AppLogger.info('AnalyticsService initialized successfully');
@@ -30,7 +30,7 @@ class AnalyticsService {
     }
   }
 
-  // Enregistrer un événement de connexion
+  // Log a login event
   Future<void> logLogin({required String method}) async {
     try {
       await _analytics.logLogin(loginMethod: method);
@@ -40,7 +40,7 @@ class AnalyticsService {
     }
   }
 
-  // Enregistrer un événement d'inscription
+  // Log a sign up event
   Future<void> logSignUp({required String method}) async {
     try {
       await _analytics.logSignUp(signUpMethod: method);
@@ -50,7 +50,7 @@ class AnalyticsService {
     }
   }
 
-  // Enregistrer un événement de recherche
+  // Log a search event
   Future<void> logSearch({required String searchTerm}) async {
     try {
       await _analytics.logSearch(searchTerm: searchTerm);
@@ -60,7 +60,7 @@ class AnalyticsService {
     }
   }
 
-  // Enregistrer un événement d'achat
+  // Log a purchase event
   Future<void> logPurchase({
     required double value,
     required String currency,
@@ -79,7 +79,7 @@ class AnalyticsService {
     }
   }
 
-  // Enregistrer un événement personnalisé
+  // Log a custom event
   Future<void> logCustomEvent({required String name, Map<String, Object>? parameters}) async {
     try {
       await _analytics.logEvent(name: name, parameters: parameters);
@@ -89,7 +89,7 @@ class AnalyticsService {
     }
   }
 
-  // Définir les propriétés utilisateur
+  // Set user properties
   Future<void> setUserProperties({
     String? userId,
     String? userRole,
@@ -114,7 +114,7 @@ class AnalyticsService {
     }
   }
 
-  // Définir l'écran courant
+  // Set current screen
   Future<void> setCurrentScreen({required String screenName}) async {
     try {
       await _analytics.setCurrentScreen(screenName: screenName);

@@ -30,7 +30,6 @@ final themeProvider = StateNotifierProvider<ThemeNotifier, AppThemeMode>((ref) {
   return ThemeNotifier();
 });
 
-// Mettez à jour l'extension également
 extension AppThemeModeExtension on AppThemeMode {
   String get name {
     switch (this) {

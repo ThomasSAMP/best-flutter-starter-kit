@@ -6,13 +6,13 @@ import '../../core/services/auth_service.dart';
 import '../models/user_model.dart';
 import '../repositories/user_repository.dart';
 
-// Provider pour l'utilisateur Firebase Auth
+// Provider for Firebase Auth user
 final authStateProvider = StreamProvider<User?>((ref) {
   final authService = getIt<AuthService>();
   return authService.authStateChanges;
 });
 
-// Provider pour l'utilisateur actuel (modèle complet)
+// Provider for current user (full model)
 final currentUserProvider = FutureProvider<UserModel?>((ref) async {
   final authState = ref.watch(authStateProvider);
 
@@ -28,7 +28,7 @@ final currentUserProvider = FutureProvider<UserModel?>((ref) async {
   );
 });
 
-// Provider pour vérifier si l'utilisateur est authentifié
+// Provider to check if the user is authenticated
 final isAuthenticatedProvider = Provider<bool>((ref) {
   final authState = ref.watch(authStateProvider);
   return authState.when(

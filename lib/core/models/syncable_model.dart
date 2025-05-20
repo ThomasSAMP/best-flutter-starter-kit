@@ -1,19 +1,19 @@
 abstract class SyncableModel {
-  /// Identifiant unique du modèle
+  /// model ID
   String get id;
 
-  /// Indique si le modèle est synchronisé avec le serveur
+  /// Indicates whether the model is synchronized with the server
   bool get isSynced;
 
-  /// Date de création du modèle
+  /// Model creation date
   DateTime get createdAt;
 
-  /// Date de dernière modification du modèle
+  /// Date of last modification of the model
   DateTime get updatedAt;
 
-  /// Convertit le modèle en Map pour la sérialisation
+  /// Converts the model to a Map for serialization
   Map<String, dynamic> toJson();
 
-  /// Crée une copie du modèle avec les modifications spécifiées
+  /// Creates a copy of the template with the specified modifications
   SyncableModel copyWith({bool? isSynced});
 }

@@ -9,29 +9,29 @@ import '../di/injection.dart';
 class NavigationService {
   AppNavigationObserver get _observer => getIt<AppNavigationObserver>();
 
-  // Méthode pour naviguer vers une route spécifique
+  // Method to navigate to a specific route
   void navigateTo(BuildContext context, String route, {Object? extra}) {
     context.go(route, extra: extra);
   }
 
-  // Méthode pour naviguer vers une route sans contexte (utile pour les notifications)
+  // Method to navigate to a route without context (useful for notifications)
   void navigateToRoute(String route) {
-    // Utilisez le navigateur global pour naviguer
+    // Use the global navigator to navigate
     final router = getIt<GoRouter>();
     router.go(route);
   }
 
-  // Méthode pour pousser une nouvelle route sur la pile
+  // Method to push a new route onto the stack
   void pushRoute(BuildContext context, String route, {Object? extra}) {
     context.push(route, extra: extra);
   }
 
-  // Méthode pour remplacer la route actuelle
+  // Method to replace the current route
   void replaceRoute(BuildContext context, String route, {Object? extra}) {
     context.replace(route, extra: extra);
   }
 
-  // Méthode pour revenir en arrière
+  // Method to go back
   void goBack(BuildContext context) {
     if (context.canPop()) {
       context.pop();
@@ -40,17 +40,17 @@ class NavigationService {
     }
   }
 
-  // Méthode pour vérifier si on peut revenir en arrière
+  // Method to check if we can go back
   bool canGoBack() {
     return _observer.canGoBack();
   }
 
-  // Méthode pour obtenir le nom de la route actuelle
+  // Method to get the current route name
   String getCurrentRouteName() {
     return _observer.getCurrentRouteName();
   }
 
-  // Méthode pour afficher une boîte de dialogue de confirmation
+  // Method to display a confirmation dialog
   Future<bool?> showConfirmationDialog(
     BuildContext context, {
     required String title,
@@ -78,7 +78,7 @@ class NavigationService {
     );
   }
 
-  // Méthode pour afficher une snackbar
+  // Method to display a snackbar
   void showSnackBar(
     BuildContext context, {
     required String message,

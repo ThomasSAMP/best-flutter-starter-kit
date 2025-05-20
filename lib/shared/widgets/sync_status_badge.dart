@@ -22,7 +22,7 @@ class SyncStatusBadge extends StatelessWidget {
 
     final color = isOffline ? Colors.grey : (isSynced ? Colors.green : Colors.orange);
 
-    final text = isOffline ? 'Hors ligne' : (isSynced ? 'Synchronisé' : 'Non synchronisé');
+    final text = isOffline ? 'Offline' : (isSynced ? 'Synchronized' : 'Not synchronized');
 
     if (isSmall) {
       return Icon(icon, size: 16, color: color);

@@ -13,20 +13,20 @@ import '../utils/logger.dart';
 
 @lazySingleton
 class ErrorService {
-  // Initialiser le service de gestion des erreurs
+  // Initialize the error handling service
   Future<void> initialize() async {
     try {
-      // Activer Crashlytics seulement en production et staging
+      // Enable Crashlytics only in production and staging
       final enableCrashlytics = !kDebugMode && !EnvConfig.isDevelopment;
       await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(enableCrashlytics);
 
-      // Capturer les erreurs Flutter
+      // Capture Flutter errors
       FlutterError.onError = _handleFlutterError;
 
-      // Capturer les erreurs asynchrones
+      // Capture asynchronous errors
       PlatformDispatcher.instance.onError = _handlePlatformError;
 
-      // Capturer les erreurs d'isolate
+      // Capture isolate errors
       Isolate.current.addErrorListener(
         RawReceivePort((pair) {
           final List<dynamic> errorAndStacktrace = pair;
@@ -34,7 +34,7 @@ class ErrorService {
         }).sendPort,
       );
 
-      // Définir les informations sur l'appareil
+      // Set device information
       if (enableCrashlytics) {
         await setDeviceInfo();
       }
@@ -45,7 +45,7 @@ class ErrorService {
     }
   }
 
-  // Méthode pour ajouter plusieurs clés personnalisées en une seule fois
+  // Method to add multiple custom keys at once
   Future<void> setCustomKeys(Map<String, dynamic> keys) async {
     if (kDebugMode || EnvConfig.isDevelopment) return;
 
@@ -55,12 +55,12 @@ class ErrorService {
     }
   }
 
-  // Méthode pour ajouter des informations sur l'appareil
+  // Method to add device information
   Future<void> setDeviceInfo() async {
     if (kDebugMode || EnvConfig.isDevelopment) return;
 
     try {
-      // Utiliser package_info_plus pour obtenir des informations sur l'application
+      // Use package_info_plus to get application information
       final packageInfo = await PackageInfo.fromPlatform();
       await setCustomKeys({
         'app_name': packageInfo.appName,
@@ -69,7 +69,7 @@ class ErrorService {
         'package_name': packageInfo.packageName,
       });
 
-      // Utiliser device_info_plus pour obtenir des informations sur l'appareil
+      // Use device_info_plus to get device information
       final deviceInfoPlugin = DeviceInfoPlugin();
 
       if (Platform.isAndroid) {
@@ -97,18 +97,18 @@ class ErrorService {
     }
   }
 
-  // Méthode pour ajouter des informations sur l'utilisateur actuel
+  // Method to add information about the current user
   Future<void> setUserInfo(String? userId, {String? email, String? name, String? role}) async {
     if (kDebugMode || EnvConfig.isDevelopment) return;
 
     try {
-      // Définir l'identifiant de l'utilisateur
+      // Set user identifier
       if (userId != null) {
         await FirebaseCrashlytics.instance.setUserIdentifier(userId);
         AppLogger.debug('Crashlytics: User identifier set to $userId');
       }
 
-      // Ajouter d'autres informations sur l'utilisateur
+      // Add other user information
       final userInfo = <String, String>{};
       if (email != null) userInfo['user_email'] = email;
       if (name != null) userInfo['user_name'] = name;
@@ -124,12 +124,12 @@ class ErrorService {
     }
   }
 
-  // Méthode pour ajouter des breadcrumbs (étapes de navigation)
+  // Method to add breadcrumbs (navigation steps)
   Future<void> addBreadcrumb(String message, {Map<String, dynamic>? data}) async {
     if (kDebugMode || EnvConfig.isDevelopment) return;
 
     try {
-      // Créer un message formaté avec les données
+      // Create a formatted message with data
       var formattedMessage = message;
       if (data != null && data.isNotEmpty) {
         formattedMessage += ' - ${data.toString()}';
@@ -142,43 +142,43 @@ class ErrorService {
     }
   }
 
-  // Gérer les erreurs Flutter
+  // Handle Flutter errors
   void _handleFlutterError(FlutterErrorDetails details) {
     AppLogger.error('Flutter error: ${details.exception}', details.exception, details.stack);
 
     if (!kDebugMode && !EnvConfig.isDevelopment) {
-      // Envoyer l'erreur à Crashlytics
+      // Send the error to Crashlytics
       FirebaseCrashlytics.instance.recordFlutterError(details);
     } else {
-      // En mode debug, afficher l'erreur dans la console
+      // In debug mode, display error in console
       FlutterError.dumpErrorToConsole(details);
     }
   }
 
-  // Gérer les erreurs de plateforme
+  // Handle platform errors
   bool _handlePlatformError(Object error, StackTrace stack) {
     AppLogger.error('Platform error', error, stack);
 
     if (!kDebugMode && !EnvConfig.isDevelopment) {
-      // Envoyer l'erreur à Crashlytics
+      // Send the error to Crashlytics
       FirebaseCrashlytics.instance.recordError(error, stack);
     }
 
-    // Retourner true pour empêcher la propagation de l'erreur
+    // Return true to prevent error propagation
     return true;
   }
 
-  // Gérer les erreurs d'isolate
+  // Handle isolate errors
   void _handleIsolateError(dynamic error, dynamic stackTrace) {
     AppLogger.error('Isolate error', error, stackTrace);
 
     if (!kDebugMode && !EnvConfig.isDevelopment) {
-      // Envoyer l'erreur à Crashlytics
+      // Send the error to Crashlytics
       FirebaseCrashlytics.instance.recordError(error, stackTrace);
     }
   }
 
-  // Méthode pour enregistrer manuellement une erreur
+  // Method to manually record an error
   Future<void> recordError(
     dynamic exception,
     StackTrace? stack, {
@@ -193,28 +193,28 @@ class ErrorService {
         exception,
         stack,
         reason: reason,
-        // Convertir information en non-nullable si nécessaire
+        // Convert information to non-nullable if necessary
         information: information ?? const <Object>[],
         fatal: fatal,
       );
     }
   }
 
-  // Méthode pour définir des attributs utilisateur
+  // Method to set user attributes
   Future<void> setUserIdentifier(String? userId) async {
     if (!kDebugMode && !EnvConfig.isDevelopment) {
       await FirebaseCrashlytics.instance.setUserIdentifier(userId ?? 'anonymous');
     }
   }
 
-  // Méthode pour définir des clés personnalisées
+  // Method to set custom keys
   Future<void> setCustomKey(String key, dynamic value) async {
     if (!kDebugMode && !EnvConfig.isDevelopment) {
       await FirebaseCrashlytics.instance.setCustomKey(key, value);
     }
   }
 
-  // Méthode pour enregistrer un message de log
+  // Method to record a log message
   Future<void> log(String message) async {
     AppLogger.debug('Crashlytics log: $message');
 
@@ -223,7 +223,7 @@ class ErrorService {
     }
   }
 
-  // Méthode pour forcer un crash (utile pour les tests)
+  // Method to force a crash (useful for testing)
   void forceCrash() {
     if (kDebugMode) {
       AppLogger.warning('Force crash called in debug mode - no crash will occur');

@@ -24,12 +24,12 @@ class SyncManager<T extends SyncableModel> extends ConsumerWidget {
           children: [
             Expanded(
               child: Text(
-                'Synchronisation des ${entityName.toLowerCase()}',
+                'Synchronizing ${entityName.toLowerCase()}',
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
             AppButton(
-              text: 'Synchroniser',
+              text: 'Synchronize',
               onPressed:
                   state.isSyncing || state.connectionStatus == ConnectionStatus.offline
                       ? null
@@ -50,7 +50,7 @@ class SyncManager<T extends SyncableModel> extends ConsumerWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              state.connectionStatus == ConnectionStatus.online ? 'En ligne' : 'Hors ligne',
+              state.connectionStatus == ConnectionStatus.online ? 'Online' : 'Offline',
               style: TextStyle(
                 color:
                     state.connectionStatus == ConnectionStatus.online ? Colors.green : Colors.grey,

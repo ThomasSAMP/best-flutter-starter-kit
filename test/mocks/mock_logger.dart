@@ -1,7 +1,7 @@
-// Remplacer la classe AppLogger pour les tests
+// Override the AppLogger class for testing
 class MockAppLogger {
   static void verbose(dynamic message) {
-    // Ne rien faire dans les tests ou imprimer simplement
+    // Do nothing in tests or just print
     print('VERBOSE: $message');
   }
 

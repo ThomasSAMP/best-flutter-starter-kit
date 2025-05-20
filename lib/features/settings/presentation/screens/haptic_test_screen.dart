@@ -32,22 +32,22 @@ class _HapticTestScreenState extends ConsumerState<HapticTestScreen> {
     setState(() {
       _hapticEnabled = value;
       _hapticService.setHapticEnabled(value);
-      _statusMessage = 'Retour haptique ${value ? 'activé' : 'désactivé'}';
+      _statusMessage = 'Haptic feedback ${value ? 'enabled' : 'disabled'}';
     });
   }
 
   void _triggerHaptic(HapticFeedbackType type) {
     _hapticService.feedback(type);
     setState(() {
-      _statusMessage = 'Retour haptique déclenché: ${type.name}';
+      _statusMessage = 'Haptic feedback triggered: ${type.name}';
     });
   }
 
   void _triggerCustomVibration() {
-    // Modèle de vibration personnalisé: 500ms on, 100ms off, 200ms on, 100ms off, 500ms on
+    // Custom vibration pattern: 500ms on, 100ms off, 200ms on, 100ms off, 500ms on
     _hapticService.customVibration([0, 500, 100, 200, 100, 500]);
     setState(() {
-      _statusMessage = 'Vibration personnalisée déclenchée';
+      _statusMessage = 'Custom vibration triggered';
     });
   }
 
@@ -58,7 +58,7 @@ class _HapticTestScreenState extends ConsumerState<HapticTestScreen> {
 
     return Scaffold(
       appBar: AppBarWidget(
-        title: 'Test Haptique',
+        title: 'Haptic Test',
         showBackButton: canPop,
         leading:
             !canPop
@@ -74,7 +74,7 @@ class _HapticTestScreenState extends ConsumerState<HapticTestScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Retour Haptique',
+              'Haptic Feedback',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 8),
@@ -85,20 +85,20 @@ class _HapticTestScreenState extends ConsumerState<HapticTestScreen> {
                   color: Theme.of(context).colorScheme.errorContainer,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Text('Votre appareil ne prend pas en charge la vibration'),
+                child: const Text('Your device does not support vibration'),
               )
             else
               Column(
                 children: [
                   SwitchListTile(
-                    title: const Text('Activer le retour haptique'),
+                    title: const Text('Enable haptic feedback'),
                     value: _hapticEnabled,
                     onChanged: _toggleHaptic,
                   ),
                   const Divider(),
                   const SizedBox(height: 16),
                   const Text(
-                    'Types de retour haptique',
+                    'Haptic Feedback Types',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const SizedBox(height: 16),
@@ -106,36 +106,36 @@ class _HapticTestScreenState extends ConsumerState<HapticTestScreen> {
                     spacing: 8,
                     runSpacing: 8,
                     children: [
-                      _buildHapticButton('Léger', HapticFeedbackType.light),
-                      _buildHapticButton('Moyen', HapticFeedbackType.medium),
-                      _buildHapticButton('Fort', HapticFeedbackType.heavy),
-                      _buildHapticButton('Succès', HapticFeedbackType.success),
-                      _buildHapticButton('Avertissement', HapticFeedbackType.warning),
-                      _buildHapticButton('Erreur', HapticFeedbackType.error),
-                      _buildHapticButton('Sélection', HapticFeedbackType.selection),
+                      _buildHapticButton('Light', HapticFeedbackType.light),
+                      _buildHapticButton('Medium', HapticFeedbackType.medium),
+                      _buildHapticButton('Heavy', HapticFeedbackType.heavy),
+                      _buildHapticButton('Success', HapticFeedbackType.success),
+                      _buildHapticButton('Warning', HapticFeedbackType.warning),
+                      _buildHapticButton('Error', HapticFeedbackType.error),
+                      _buildHapticButton('Selection', HapticFeedbackType.selection),
                       _buildHapticButton('Tab', HapticFeedbackType.tabSelection),
-                      _buildHapticButton('Bouton', HapticFeedbackType.buttonPress),
+                      _buildHapticButton('Button', HapticFeedbackType.buttonPress),
                     ],
                   ),
                   const SizedBox(height: 24),
                   const Divider(),
                   const SizedBox(height: 16),
                   const Text(
-                    'Vibration Personnalisée',
+                    'Custom Vibration',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const SizedBox(height: 16),
                   AppButton(
-                    text: 'Vibration Personnalisée',
+                    text: 'Custom Vibration',
                     onPressed: _triggerCustomVibration,
                     icon: Icons.vibration,
                   ),
                   AppButton(
-                    text: 'Arrêter Vibration',
+                    text: 'Stop Vibration',
                     onPressed: () {
                       _hapticService.stopVibration();
                       setState(() {
-                        _statusMessage = 'Vibration arrêtée';
+                        _statusMessage = 'Vibration stopped';
                       });
                     },
                     icon: Icons.stop,
@@ -160,10 +160,10 @@ class _HapticTestScreenState extends ConsumerState<HapticTestScreen> {
             const Text('Instructions', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             const SizedBox(height: 8),
             const Text(
-              '1. Activez ou désactivez le retour haptique avec le commutateur\n'
-              '2. Essayez les différents types de retour haptique en appuyant sur les boutons\n'
-              '3. Testez la vibration personnalisée pour sentir un modèle de vibration complexe\n'
-              '4. Notez que certains types de retour peuvent ne pas être perceptibles sur tous les appareils',
+              '1. Turn haptic feedback on or off with the switch\n'
+              '2. Try out the different types of haptic feedback by pressing the buttons\n'
+              '3. Test custom vibration to feel a complex vibration pattern\n'
+              '4. Note that some feedback types may not be perceptible on all devices',
             ),
           ],
         ),

@@ -23,12 +23,12 @@ class HapticService {
   bool _hapticEnabled = true;
   bool _canVibrate = false;
 
-  // Constructeur
+  // Constructor
   HapticService() {
     _initHaptic();
   }
 
-  // Initialiser le service haptique
+  // Initialize haptic service
   Future<void> _initHaptic() async {
     try {
       _canVibrate = await Vibration.hasVibrator() ?? false;
@@ -39,19 +39,19 @@ class HapticService {
     }
   }
 
-  // Activer/désactiver les retours haptiques
+  // Enable/disable haptic feedback
   void setHapticEnabled(bool enabled) {
     _hapticEnabled = enabled;
     AppLogger.debug('Haptic feedback ${enabled ? 'enabled' : 'disabled'}');
   }
 
-  // Vérifier si les retours haptiques sont activés
+  // Check if haptic feedback is enabled
   bool get isHapticEnabled => _hapticEnabled;
 
-  // Vérifier si l'appareil peut vibrer
+  // Check if the device can vibrate
   bool get canVibrate => _canVibrate;
 
-  // Méthode générique pour déclencher un retour haptique
+  // Generic method to trigger haptic feedback
   Future<void> feedback(HapticFeedbackType type) async {
     if (!_hapticEnabled || !_canVibrate) return;
 
@@ -90,7 +90,7 @@ class HapticService {
     }
   }
 
-  // Impact léger
+  // Light impact
   Future<void> _lightImpact() async {
     if (Platform.isIOS) {
       Vibration.vibrate(duration: 20, amplitude: 40);
@@ -99,7 +99,7 @@ class HapticService {
     }
   }
 
-  // Impact moyen
+  // Medium impact
   Future<void> _mediumImpact() async {
     if (Platform.isIOS) {
       Vibration.vibrate(duration: 40, amplitude: 100);
@@ -108,7 +108,7 @@ class HapticService {
     }
   }
 
-  // Impact fort
+  // Heavy impact
   Future<void> _heavyImpact() async {
     if (Platform.isIOS) {
       Vibration.vibrate(duration: 60, amplitude: 255);
@@ -117,42 +117,42 @@ class HapticService {
     }
   }
 
-  // Retour de succès (vibration personnalisée)
+  // Success feedback (custom vibration)
   Future<void> _successFeedback() async {
     if (Platform.isIOS) {
       await Vibration.vibrate(pattern: [0, 30, 100, 30]);
     } else {
-      // Simuler un retour de succès sur Android
+      // Simulate success feedback on Android
       await Vibration.vibrate(pattern: [0, 30, 100, 30]);
     }
   }
 
-  // Retour d'avertissement (vibration personnalisée)
+  // Warning feedback (custom vibration)
   Future<void> _warningFeedback() async {
     if (Platform.isIOS) {
       await Vibration.vibrate(pattern: [0, 50, 100, 50]);
     } else {
-      // Simuler un retour d'avertissement sur Android
+      // Simulate warning feedback on Android
       await Vibration.vibrate(pattern: [0, 50, 100, 50]);
     }
   }
 
-  // Retour d'erreur (vibration personnalisée)
+  // Error feedback (custom vibration)
   Future<void> _errorFeedback() async {
     if (Platform.isIOS) {
       await Vibration.vibrate(pattern: [0, 70, 100, 70, 100, 70]);
     } else {
-      // Simuler un retour d'erreur sur Android
+      // Simulate error feedback on Android
       await Vibration.vibrate(pattern: [0, 70, 100, 70, 100, 70]);
     }
   }
 
-  // Retour de sélection
+  // Selection feedback
   Future<void> _selectionFeedback() async {
     await HapticFeedback.selectionClick();
   }
 
-  // Retour de sélection d'onglet
+  // Tab selection feedback
   Future<void> _tabSelectionFeedback() async {
     if (Platform.isIOS) {
       await Vibration.vibrate(duration: 10, amplitude: 40);
@@ -161,7 +161,7 @@ class HapticService {
     }
   }
 
-  // Retour d'appui sur bouton
+  // Button press feedback
   Future<void> _buttonPressFeedback() async {
     if (Platform.isIOS) {
       await Vibration.vibrate(duration: 15, amplitude: 40);
@@ -170,7 +170,7 @@ class HapticService {
     }
   }
 
-  // Vibration personnalisée (pour les cas avancés)
+  // Custom vibration (for advanced cases)
   Future<void> customVibration(List<int> pattern, {int repeat = -1}) async {
     if (!_hapticEnabled || !_canVibrate) return;
 
@@ -181,7 +181,7 @@ class HapticService {
     }
   }
 
-  // Arrêter la vibration
+  // Stop vibration
   Future<void> stopVibration() async {
     try {
       await Vibration.cancel();

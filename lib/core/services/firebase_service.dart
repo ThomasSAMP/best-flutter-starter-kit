@@ -17,45 +17,45 @@ class FirebaseService {
     try {
       await Firebase.initializeApp();
 
-      // Initialiser le service d'erreur en premier
+      // Initialize the error service first
       await getIt<ErrorService>().initialize();
 
-      // Configurer le gestionnaire de messages en arrière-plan
+      // Configure the background message handler
       FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-      // Initialiser le service de notification
+      // Initialize notification service
       await getIt<NotificationService>().initialize();
 
-      // Initialiser le service d'analytics
+      // Initialize analytics service
       await getIt<AnalyticsService>().initialize();
 
-      // Initialiser le service de mise à jour
+      // Initialize the update service
       await getIt<UpdateService>().initialize();
 
-      // Initialiser le service de connectivité
+      // Initialize the connectivity service
       // await getIt<ConnectivityService>().initialize();
-      // ==> Pas besoin d'initialiser le service de connectivité explicitement car le constructeur s'en charge
+      // ==> No need to initialize the connectivity service explicitly as the manufacturer takes care of it
 
       AppLogger.info('Firebase initialized successfully');
     } catch (e, stackTrace) {
       AppLogger.error('Failed to initialize Firebase', e, stackTrace);
       if (!kDebugMode) {
-        // Utiliser directement FirebaseCrashlytics ici car ErrorService pourrait ne pas être initialisé
+        // Use FirebaseCrashlytics directly here as ErrorService might not be initialized
         await FirebaseCrashlytics.instance.recordError(e, stackTrace);
       }
     }
   }
 }
 
-// Cette fonction doit être au niveau supérieur (pas une méthode de classe)
+// This function must be at the top level (not a class method)
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // Initialiser Firebase si nécessaire (pour les messages en arrière-plan)
+  // Initialize Firebase if necessary (for background messages)
   await Firebase.initializeApp();
 
   print('Background message received: ${message.notification?.title}');
   print('Message data: ${message.data}');
 
-  // TODO: Stocker les données du message pour les traiter lorsque l'application est ouverte
-  // TODO: Par exemple, en utilisant SharedPreferences
+  // TODO: Store message data to process when the application is opened
+  // TODO: For example, using SharedPreferences
 }

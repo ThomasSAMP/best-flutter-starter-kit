@@ -31,10 +31,10 @@ class _ErrorTestScreenState extends ConsumerState<ErrorTestScreen> {
     });
 
     try {
-      // Déclencher une erreur synchrone
+      // Trigger a synchronous error
       throw Exception('This is a test synchronous exception');
     } catch (e, stackTrace) {
-      // Enregistrer l'erreur
+      // Record the error
       await _errorService.recordError(
         e,
         stackTrace,
@@ -59,11 +59,11 @@ class _ErrorTestScreenState extends ConsumerState<ErrorTestScreen> {
     });
 
     try {
-      // Déclencher une erreur asynchrone
+      // Trigger an asynchronous error
       await Future<void>.delayed(const Duration(milliseconds: 100));
       throw Exception('This is a test asynchronous exception');
     } catch (e, stackTrace) {
-      // Enregistrer l'erreur
+      // Record the error
       await _errorService.recordError(
         e,
         stackTrace,
@@ -88,7 +88,7 @@ class _ErrorTestScreenState extends ConsumerState<ErrorTestScreen> {
     });
 
     try {
-      // Simuler une erreur non capturée
+      // Simulate an uncaught error
       Future<void>.microtask(() {
         throw Exception('This is a test uncaught exception');
       });
@@ -112,7 +112,7 @@ class _ErrorTestScreenState extends ConsumerState<ErrorTestScreen> {
     });
 
     try {
-      // Simuler une erreur fatale
+      // Simulate a fatal error
       await _errorService.recordError(
         Exception('This is a test fatal exception'),
         StackTrace.current,
@@ -137,7 +137,7 @@ class _ErrorTestScreenState extends ConsumerState<ErrorTestScreen> {
     });
 
     try {
-      // Ajouter des clés personnalisées
+      // Add custom keys
       await _errorService.setUserIdentifier('test_user_123');
       await _errorService.setCustomKey('test_key_1', 'test_value_1');
       await _errorService.setCustomKey('test_key_2', 123);
@@ -161,7 +161,7 @@ class _ErrorTestScreenState extends ConsumerState<ErrorTestScreen> {
     });
 
     try {
-      // Ajouter quelques breadcrumbs
+      // Add some breadcrumbs
       await _errorService.addBreadcrumb('User viewed product', data: {'product_id': '12345'});
       await _errorService.addBreadcrumb(
         'User added to cart',
@@ -186,7 +186,7 @@ class _ErrorTestScreenState extends ConsumerState<ErrorTestScreen> {
     });
 
     try {
-      // Définir les informations sur l'appareil
+      // Set device information
       await _errorService.setDeviceInfo();
 
       setState(() {

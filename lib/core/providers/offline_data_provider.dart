@@ -5,7 +5,7 @@ import '../repositories/offline_repository_base.dart';
 import '../services/connectivity_service.dart';
 import '../utils/logger.dart';
 
-/// État des données hors ligne
+/// Offline data state
 class OfflineDataState<T extends SyncableModel> {
   final List<T> items;
   final bool isLoading;
@@ -21,7 +21,7 @@ class OfflineDataState<T extends SyncableModel> {
     required this.connectionStatus,
   });
 
-  /// État initial
+  /// Initial state
   factory OfflineDataState.initial(ConnectionStatus connectionStatus) {
     return OfflineDataState<T>(
       items: [],
@@ -32,7 +32,7 @@ class OfflineDataState<T extends SyncableModel> {
     );
   }
 
-  /// Crée une copie de l'état avec les modifications spécifiées
+  /// Create a copy of the state with specified modifications
   OfflineDataState<T> copyWith({
     List<T>? items,
     bool? isLoading,
@@ -51,7 +51,7 @@ class OfflineDataState<T extends SyncableModel> {
   }
 }
 
-/// Notifier pour les données hors ligne
+/// Notifier for offline data
 class OfflineDataNotifier<T extends SyncableModel> extends StateNotifier<OfflineDataState<T>> {
   final OfflineRepositoryBase<T> repository;
   final ConnectivityService connectivityService;
@@ -62,24 +62,24 @@ class OfflineDataNotifier<T extends SyncableModel> extends StateNotifier<Offline
     required this.connectivityService,
     required this.fetchItems,
   }) : super(OfflineDataState.initial(connectivityService.currentStatus)) {
-    // Écouter les changements de connectivité
+    // Listen to connectivity changes
     connectivityService.connectionStatus.listen(_handleConnectivityChange);
 
-    // Charger les données initiales
+    // Load initial data
     loadItems();
   }
 
-  /// Gère les changements de connectivité
+  /// Handle connectivity changes
   void _handleConnectivityChange(ConnectionStatus status) {
     state = state.copyWith(connectionStatus: status);
 
-    // Si nous passons de hors ligne à en ligne, synchroniser les données
+    // If we go from offline to online, synchronize data
     if (status == ConnectionStatus.online && state.connectionStatus == ConnectionStatus.offline) {
       syncWithServer();
     }
   }
 
-  /// Charge les éléments
+  /// Load items
   Future<void> loadItems() async {
     state = state.copyWith(isLoading: true, clearError: true);
 
@@ -95,7 +95,7 @@ class OfflineDataNotifier<T extends SyncableModel> extends StateNotifier<Offline
     }
   }
 
-  /// Synchronise avec le serveur
+  /// Synchronize with server
   Future<void> syncWithServer() async {
     if (state.connectionStatus == ConnectionStatus.offline) {
       state = state.copyWith(errorMessage: 'Cannot sync while offline');
@@ -106,7 +106,7 @@ class OfflineDataNotifier<T extends SyncableModel> extends StateNotifier<Offline
 
     try {
       await repository.syncWithServer();
-      await loadItems(); // Recharger les éléments après la synchronisation
+      await loadItems(); // Reload items after synchronization
       state = state.copyWith(isSyncing: false);
     } catch (e) {
       AppLogger.error('Error syncing with server', e);
@@ -117,7 +117,7 @@ class OfflineDataNotifier<T extends SyncableModel> extends StateNotifier<Offline
     }
   }
 
-  /// Vérifie si un élément est synchronisé
+  /// Check if an item is synchronized
   bool isItemSynced(String id) {
     final item = state.items.firstWhere((item) => item.id == id, orElse: () => null as T);
 
@@ -125,7 +125,7 @@ class OfflineDataNotifier<T extends SyncableModel> extends StateNotifier<Offline
   }
 }
 
-/// Crée un provider pour les données hors ligne
+/// Create a provider for offline data
 StateNotifierProvider<OfflineDataNotifier<T>, OfflineDataState<T>>
 createOfflineDataProvider<T extends SyncableModel>({
   required OfflineRepositoryBase<T> repository,

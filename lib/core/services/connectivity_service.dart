@@ -9,30 +9,30 @@ enum ConnectionStatus { online, offline }
 
 @lazySingleton
 class ConnectivityService {
-  // Instance de Connectivity pour surveiller les changements de connectivité
+  // Connectivity instance to monitor connectivity changes
   final Connectivity _connectivity = Connectivity();
 
-  // Contrôleur de flux pour diffuser les changements d'état de connexion
+  // Stream controller to broadcast connection status changes
   final _connectionStatusController = StreamController<ConnectionStatus>.broadcast();
 
-  // Stream exposé pour que les autres parties de l'application puissent écouter les changements
+  // Exposed stream so other parts of the application can listen to changes
   Stream<ConnectionStatus> get connectionStatus => _connectionStatusController.stream;
 
-  // État actuel de la connexion
+  // Current connection status
   ConnectionStatus _currentStatus = ConnectionStatus.online;
   ConnectionStatus get currentStatus => _currentStatus;
 
-  // Abonnement aux changements de connectivité
+  // Subscription to connectivity changes
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
   ConnectivityService() {
-    // Initialiser l'état de la connexion
+    // Initialize connection state
     _initConnectivity();
-    // Écouter les changements de connectivité
+    // Listen to connectivity changes
     _connectivitySubscription = _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
   }
 
-  // Initialiser l'état de la connexion au démarrage
+  // Initialize connection state at startup
   Future<void> _initConnectivity() async {
     try {
       final results = await _connectivity.checkConnectivity();
@@ -43,9 +43,9 @@ class ConnectivityService {
     }
   }
 
-  // Mettre à jour l'état de la connexion et notifier les écouteurs
+  // Update connection state and notify listeners
   void _updateConnectionStatus(List<ConnectivityResult> results) {
-    // Si au moins un résultat n'est pas "none", alors nous sommes en ligne
+    // If at least one result is not "none", then we are online
     final isOffline =
         results.isEmpty || results.every((result) => result == ConnectivityResult.none);
 
@@ -59,7 +59,7 @@ class ConnectivityService {
     }
   }
 
-  // Vérifier manuellement l'état de la connexion
+  // Manually check connection status
   Future<ConnectionStatus> checkConnectivity() async {
     try {
       final results = await _connectivity.checkConnectivity();
@@ -71,7 +71,7 @@ class ConnectivityService {
     }
   }
 
-  // Nettoyer les ressources lors de la destruction du service
+  // Clean up resources when the service is destroyed
   void dispose() {
     _connectivitySubscription?.cancel();
     _connectionStatusController.close();
